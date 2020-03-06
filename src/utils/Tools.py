@@ -1,4 +1,4 @@
-#
+
 # This module allows for testing colab code
 #
 import sys
@@ -7,7 +7,9 @@ import json
 def install_file(doc_id, filename, force=False, persist=True):
   import os
   import urllib
-  import importlib
+  import urllib.parse
+  import urllib.request
+  #import importlib
 
   if not force and os.path.exists(filename):
     with open(filename, 'r') as fd:
@@ -27,7 +29,9 @@ def install_file(doc_id, filename, force=False, persist=True):
 def hello_world():
     print("Hello!")
 
+
 class TestFramework(object):
+
     def __init__(self, notebook_id, lesson_id):
         self.notebook_id = notebook_id
         self.lesson_id   = lesson_id
@@ -35,15 +39,17 @@ class TestFramework(object):
         # make sure notebook is readable
         txt = install_file(notebook_id, 'file.json', force=True, persist=False)
         if not txt.find('{"nbformat') == 0:
-            throw Exception("Make notebook viewable")
+            raise Exception("Make notebook viewable")
 
-   def parse(self, txt):
+    def parse(self, text):
+
        '''
           "metadata":{"id":"2q1l6oLFOjxV","colab_type":"code","outputId":"8a9a82ab-e6c8-4a86-a0ac-d6a045a519da","executionInfo":{"status":"ok","timestamp":1583528004120,"user_tz":480,"elapsed":624,"user":{"displayName":"mike haberman
-        '''
-        code = json.loads(txt)
-        lines = []
-        for cell in code['cells']:
+       '''
+
+       code = json.loads(text)
+       lines = []
+       for cell in code['cells']:
             if cell['cell_type'] == 'code':
                 meta = cell.get('metadata', {})
                 info = meta.get('executionInfo', {})
@@ -53,14 +59,15 @@ class TestFramework(object):
                    #print(user['displayName'], user)
 
                 for line in cell['source']:
-                    lines.append(line.encode('UTF-8').rstrip())
+                    clean = line.rstrip()
+                    lines.append(clean)
             elif cell['cell_type'] == 'markdown':
                 pass
                 #print('# -------- markdown --------')
                 #for line in cell['source']:
                 #    print("#", line, end='')
                 #print('\n')
-        return lines
+       return lines
 
 
 #
@@ -89,10 +96,14 @@ def add_test(fn, notebook_id):
 
 
 if __name__ == '__main__':
+    NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
+    LESSON_ID = 'LinearAlgebra:1:1'  # keep this
     txt = open('test.json').read()
-    lines = parse(txt)
-    code = '\n'.join(lines)
+
+    tester = TestFramework(NOTEBOOK_ID, LESSON_ID)
+    lines = tester.parse(txt)
+    python = '\n'.join(lines)
     with open('wow.py', 'w') as fd:
-        fd.write(code)
+        fd.write(python)
 
 
