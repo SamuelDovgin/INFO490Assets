@@ -10,7 +10,7 @@ def install_testing_framework():
       from info490.src.utils import Client
       importlib.reload(Tools)
       importlib.reload(Client)
-      return Tools.TestFramework(NOTEBOOK_ID, LESSON_ID)
+      return Tools.TestFramework(NOTEBOOK_ID, LESSON_ID, Client)
    except ImportError as e:
      print(str(e))
      class Nop(object):

@@ -14,11 +14,35 @@ def css_styling(snip):
 
 if __name__ == '__main__':
 
+    import json
+
     NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
     LESSON_ID = 'LinearAlgebra:1:1'  # keep this
+    LESSON_ID = '00'  # keep this
+
+    SERVER = 'http://192.168.1.78:8080/testzip'
+
     import Client
-    tester = Tools.TestFramework(NOTEBOOK_ID, LESSON_ID, Client)
+
+    client = Client.ClientTest(SERVER, LESSON_ID)
+    tester = Tools.TestFramework(NOTEBOOK_ID, client)
     tester.hello_world()
+    tester.test_function('simple_add')
+
+    def v1():
+        zip_file = Client.create_zipfile('solution.py')
+        response = Client.send_zip(SERVER, zip_file, LESSON_ID, 'simple_add')
+
+        error   = response['error_code']
+        payload = response['payload']
+        if error is None:
+            print(json.loads(payload['test_result']))
+        else:
+            print('ERROR', error)
+
+
+
+
 
     def test_parser():
         import student
