@@ -6,9 +6,11 @@ LESSON_ID   = 'LinearAlgebra:1:1'                  # keep this
 def install_testing_framework():
    try:
       import importlib
-      from info490.src.utils import Tools as helper
+      from info490.src.utils import Tools
+      from info490.src.utils import Client
       importlib.reload(Tools)
-      return helper.TestFramework(NOTEBOOK_ID, LESSON_ID)
+      importlib.reload(Client)
+      return Tools.TestFramework(NOTEBOOK_ID, LESSON_ID)
    except ImportError as e:
      print(str(e))
      class Nop(object):

@@ -16,7 +16,8 @@ if __name__ == '__main__':
 
     NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
     LESSON_ID = 'LinearAlgebra:1:1'  # keep this
-    tester = Tools.TestFramework(NOTEBOOK_ID, LESSON_ID)
+    import Client
+    tester = Tools.TestFramework(NOTEBOOK_ID, LESSON_ID, Client)
     tester.hello_world()
 
     def test_parser():
