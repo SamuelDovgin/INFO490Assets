@@ -78,7 +78,7 @@ class TestFramework(object):
 
         return '\n'.join(lines)
 
-    def add_test(self, fn):
+    def test_with_button(self, fn):
         import ipywidgets as widgets
         from IPython.display import display
 
