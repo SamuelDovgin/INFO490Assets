@@ -37,33 +37,26 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
   return text
 
 
+
 class TestFramework(object):
 
     JSON_FILE    = 'file.json'
     STUDENT_FILE = 'solution.py'
-    SERVER       = 'http://75.156.71.78:8080/testzip'
 
     def __init__(self, notebook_id, client):
 
         assert notebook_id is not None, "bad init"
 
         self.notebook_id = notebook_id
-        self.backend = False
+        self.client = client
 
-        try:
-            self.client = client
+        # test if user enabled reading notebook
+        user = self.write_file(TestFramework.STUDENT_FILE)
+        client.user = user
 
-            # test if user enabled reading notebook
-            user = self.write_file(TestFramework.STUDENT_FILE)
-            client.user = user
-
-            import ipywidgets as widgets
-            from IPython.display import display
-        except ImportError as e:
-            self.backend = True
 
     def hello_world(self):
-        if self.backend:
+        if self.client.backend:
             print("Hello! (backend)")
         else:
             print("Hello!")
@@ -123,8 +116,8 @@ class TestFramework(object):
 
     def test_with_button(self, fn):
 
-        if self.backend is not None:
-            return 'unable to test'
+        if self.client.backend:
+            return 'unable to test locally'
 
         if callable(fn):
             fn = fn.__name__
@@ -149,8 +142,8 @@ class TestFramework(object):
             button.on_click(on_button_clicked)
             display(button, output)
 
-        except ImportError:
-            return 'unable to test'
+        except ImportError as e:
+            return 'unable to test: ' + str(e)
 
 
 #

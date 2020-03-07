@@ -65,17 +65,26 @@ def send_zip(server, filename, assn_tag, fn_name=None):
         return data
 
 
-DEFAULT_SERVER = 'http//192.168.1.78:8080/testzip'
+try:
+    backend = False
+    SERVER = 'http://75.156.71.78:8080/testzip'
+    import ipywidgets as widgets
+    from IPython.display import display
+except ImportError as e:
+    backend = True
+    SERVER = 'http//192.168.1.78:8080/testzip'
+
 
 class ClientTest(object):
 
-    def __init__(self, lesson_id, server=DEFAULT_SERVER):
+    def __init__(self, lesson_id, server=SERVER):
 
         assert lesson_id is not None, "bad init"
 
         self.server = server
         self.lesson_id = lesson_id
         self.user = None
+        self.backend = backend
 
 
     def test_file(self, filename, fn_name=None):
