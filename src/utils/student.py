@@ -9,14 +9,15 @@ def install_testing_framework():
       from info490.src.utils import Tools as helper
       importlib.reload(Tools)
       return helper.TestFramework(NOTEBOOK_ID, LESSON_ID)
-   except ImportError:
+   except ImportError as e:
+     print(str(e))
      class Nop(object):
         def nop(*args, **kw): return("unable to test")
         def __getattr__(self, _): return self.nop
      return Nop()
 
 tester = install_testing_framework()
-#tester.hello_world()
+tester.hello_world()
 def simple_add(a,b):
   return a+b
 
@@ -28,13 +29,7 @@ tester.test_with_button(simple_add)
 def hello_world(a,b):
   return a + b
 
-def css_styling(snip):
-    from IPython.core.display import HTML
-    import requests
-    styles = requests.get('https://raw.githubusercontent.com/fbkarsdorp/python-course/master/styles/custom.css')
-    txt = styles.text
-    idx = txt.find('<style>')
-    return HTML(txt[idx:] + snip)
+#tester.test_function(hello_world)
 apple_a = {"bad", "red", "firm", "sweet"}
 apple_b = {"bad", "yellow", "firm", "sour"}
 len(apple_a.difference(apple_b))
