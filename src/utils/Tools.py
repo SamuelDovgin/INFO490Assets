@@ -29,7 +29,6 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
 def hello_world():
     print("Hello!")
 
-
 class TestFramework(object):
 
     def __init__(self, notebook_id, lesson_id):
@@ -47,6 +46,7 @@ class TestFramework(object):
         py_code = self.parse(text)
         with open('student.py', 'w') as fd:
             fd.write(py_code)
+        return py_code
 
     def parse(self, text):
 
@@ -82,16 +82,18 @@ class TestFramework(object):
         import ipywidgets as widgets
         from IPython.display import display
 
-        cells = self.parse(txt)
-
         name = fn.__name__
         button = widgets.Button(description="Test " + name)
         output = widgets.Output()
 
         def on_button_clicked(b):
+
+            code = self.convert()
+            # send code off to be tested !
+
             # Display the message within the output widget.
             with output:
-                print(cells)
+                #print(cells)
                 print("Button clicked.", name)
 
         button.on_click(on_button_clicked)
