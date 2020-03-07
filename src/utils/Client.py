@@ -65,9 +65,11 @@ def send_zip(server, filename, assn_tag, fn_name=None):
         return data
 
 
+DEFAULT_SERVER = 'http//192.168.1.78:8080/testzip'
+
 class ClientTest(object):
 
-    def __init__(self, server, lesson_id):
+    def __init__(self, lesson_id, server=DEFAULT_SERVER):
 
         assert lesson_id is not None, "bad init"
 
