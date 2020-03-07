@@ -129,7 +129,7 @@ class TestFramework(object):
             button = widgets.Button(description="Test " + fn)
             output = widgets.Output()
 
-            def on_button_clicked():
+            def on_button_clicked(input):
                 self.write_file(TestFramework.STUDENT_FILE)
                 response = self.client.test_function(TestFramework.STUDENT_FILE, fn)
                 # send code off to be tested !
@@ -137,7 +137,7 @@ class TestFramework(object):
                 # Display the message within the output widget.
                 with output:
                     # print(cells)
-                    print("Button clicked.", fn)
+                    print("Button clicked.", fn, input, response)
 
             button.on_click(on_button_clicked)
             display(button, output)
