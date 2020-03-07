@@ -13,7 +13,6 @@ print(dir(tester))
 
 import sys
 import json
-import Client
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
   import os
@@ -44,7 +43,7 @@ class TestFramework(object):
     STUDENT_FILE = 'student.py'
     SERVER       = 'http://75.156.71.78:8080/testzip'
 
-    def __init__(self, notebook_id, lesson_id):
+    def __init__(self, notebook_id, lesson_id, cmod):
 
         assert notebook_id is not None, "bad init"
         assert lesson_id is not None, "bad init"
@@ -58,7 +57,7 @@ class TestFramework(object):
 
             import ipywidgets as widgets
             from IPython.display import display
-            self.client = Client.ClientTest(TestFramework.SERVER, lesson_id, self.user)
+            self.client = cmod.ClientTest(TestFramework.SERVER, lesson_id, self.user)
         except ImportError:
             self.client = None
 
