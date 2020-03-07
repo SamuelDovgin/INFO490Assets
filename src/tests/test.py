@@ -1,6 +1,9 @@
 
 
-import Tools
+import sys
+sys.path.append('..')
+from utils import Tools
+from utils import Client
 
 def css_styling(snip):
     from IPython.core.display import HTML
@@ -21,8 +24,6 @@ if __name__ == '__main__':
     LESSON_ID = '00'  # keep this
 
     SERVER = 'http://192.168.1.78:8080/testzip'
-
-    import Client
 
     client = Client.ClientTest(SERVER, LESSON_ID)
     tester = Tools.TestFramework(NOTEBOOK_ID, client)
