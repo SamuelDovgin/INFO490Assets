@@ -1,91 +1,40 @@
-import Tools
-print(dir(Tools))
+# be sure to run me after filling it in
+NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
+LESSON_ID   = 'LinearAlgebra:1:1'                  # keep this
+# !python --version
+#!git clone https://github.com/NSF-EC/INFO490Assets.git info490
+def install_testing_framework():
+   try:
+      import importlib
+      from info490.src.utils import Tools as helper
+      importlib.reload(Tools)
+      return helper.TestFramework(NOTEBOOK_ID, LESSON_ID)
+   except ImportError:
+     class Nop(object):
+        def nop(*args, **kw): return("unable to test")
+        def __getattr__(self, _): return self.nop
+     return Nop()
+
+tester = install_testing_framework()
+#tester.hello_world()
+def simple_add(a,b):
+  return a+b
+
+tester.test_with_button(simple_add)
 # https://www.dataquest.io/blog/advanced-jupyter-notebooks-tutorial/
 ## https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228
 # https://colab.research.google.com/github/fbkarsdorp/python-course/blob/master/answerbook/Chapter%2010%20-%20Learning%20without%20Supervision.ipynb#scrollTo=GVu_RoIarsWI
-import urllib
-import importlib
-id='1tkNkvGsZARYKFNLk6BIA_GLS7Z6JMXEb'
-id='1JaBOzRUM3pgbYVFpU640SjxCjH7SH98N' # Tools.py
-def install_module(doc_id, filename, force=False):
-
-  import os
-  if not force and os.path.exists(filename):
-    return True
-
-  baseurl = "https://drive.google.com/uc"
-  params = {"export" : "download",
-            "id"     : doc_id}
-
-  url = baseurl + "?" + urllib.parse.urlencode(params)
-  r = urllib.request.urlopen(url)
-  text = str(r.read().decode('UTF-8'))
-  with open(filename, 'w') as fd:
-    fd.write(text)
-  return text
-
-  # with open('__init__.py', 'w') as fd:
-  #   fd.write('')
-
-import os
-#os.remove('__init__.py')
-#os.remove('Tool2.py')
-import sys
-#sys.path.append('..')
-#from content import Tool2 as test
-#print(os.getcwd())
-install_module(id, 'Tool3.py')
-# mymod = importlib.import_module('Tools')
-# print(dir(mymod))
-import Tool3 as test
-#print(dir(test))
-test.hello_world()
-notebook_id = '1UiDdydJD4omb-aAqMq1q5bQqggMHv0UH'
-import ipywidgets as widgets
-from IPython.display import display
-
-def button_test(fn, notebook_id):
-
-  # make sure notebook is readable
-  txt = install_module(notebook_id, 'file.json', force=True)
-  print(txt)
-  if not txt.find('{"nbformat') == 0:
-    print("Make notebook viewable")
-    return False
-
-  # id of Python helper
-  id='1JaBOzRUM3pgbYVFpU640SjxCjH7SH98N' # Tools.py
-  install_module(id, 'Tools.py', True)
-  import Tools
-
-  cells = Tools.parse(txt)
-  print(cells)
-
-  name = fn.__name__
-  button = widgets.Button(description="Test " + name)
-  output = widgets.Output()
-
-  def on_button_clicked(b):
-    # Display the message within the output widget.
-    with output:
-       print("Button clicked.", name)
-
-  button.on_click(on_button_clicked)
-  display(button, output)
-
 
 def hello_world(a,b):
   return a + b
 
-button_test(hello_world, notebook_id)
-from IPython.core.display import HTML
-import requests
-def css_styling():
+def css_styling(snip):
+    from IPython.core.display import HTML
+    import requests
     styles = requests.get('https://raw.githubusercontent.com/fbkarsdorp/python-course/master/styles/custom.css')
     txt = styles.text
     idx = txt.find('<style>')
-    return txt[idx:]
-HTML(css_styling() + '<div class="warning">TEST</div>')
+    return HTML(txt[idx:] + snip)
 apple_a = {"bad", "red", "firm", "sweet"}
 apple_b = {"bad", "yellow", "firm", "sour"}
 len(apple_a.difference(apple_b))
@@ -322,8 +271,3 @@ print(round(summed_jaccard_distance(numerals[5], numerals[6]), 2) == 4.8)
 solution = cluster(numerals, labels=languages,
                    distance_fn=summed_jaccard_distance) # insert your code here
 print(solution)
-from IPython.core.display import HTML
-def css_styling():
-    styles = open("styles/custom.css", "r").read()
-    return HTML(styles)
-css_styling()

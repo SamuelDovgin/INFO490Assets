@@ -1,8 +1,19 @@
 
+'''
+
 # This module allows for testing colab code
-#
+# while debugging and testing, need to reload the module
+import importlib
+importlib.reload(Tools)
+
+from info490.src.utils import Tools as helper
+print(dir(tester))
+
+'''
+
 import sys
 import json
+import Client
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
   import os
@@ -26,25 +37,44 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
        fd.write(text)
   return text
 
-def hello_world():
-    print("Hello!")
 
 class TestFramework(object):
 
+    JSON_FILE    = 'file.json'
+    STUDENT_FILE = 'student.py'
+    SERVER       = 'http://75.156.71.78:8080/testzip'
+
     def __init__(self, notebook_id, lesson_id):
+
+        assert notebook_id is not None, "bad init"
+        assert lesson_id is not None, "bad init"
+
         self.notebook_id = notebook_id
-        self.lesson_id   = lesson_id
         self.user = None
 
-        # make sure notebook is readable
-        txt = install_gd_file(notebook_id, 'file.json', force=True, persist=False)
-        if not txt.find('{"nbformat') == 0:
+        try:
+            # test if user enabled reading notebook
+            self.write_file(TestFramework.STUDENT_FILE)
+
+            import ipywidgets as widgets
+            from IPython.display import display
+            self.client = Client.ClientTest(TestFramework.SERVER, lesson_id, self.user)
+        except ImportError:
+            self.client = None
+
+    def hello_world(self):
+        if self.client is not None:
+           print("Hello!")
+        else:
+           print("Hello! (backend)")
+
+    def write_file(self, fn=STUDENT_FILE):
+        text = install_gd_file(self.notebook_id, TestFramework.JSON_FILE, force=True, persist=False)
+        if not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-    def convert(self):
-        text = install_gd_file(self.notebook_id, 'file.json', force=True, persist=False)
         py_code = self.parse(text)
-        with open('student.py', 'w') as fd:
+        with open(fn, 'w') as fd:
             fd.write(py_code)
         return py_code
 
@@ -78,49 +108,49 @@ class TestFramework(object):
 
         return '\n'.join(lines)
 
+    def test_function(self, fn):
+        pass
+
     def test_with_button(self, fn):
-        import ipywidgets as widgets
-        from IPython.display import display
 
-        name = fn.__name__
-        button = widgets.Button(description="Test " + name)
-        output = widgets.Output()
+        if self.client is None:
+            return 'unable to test'
 
-        def on_button_clicked(b):
+        try:
+            import ipywidgets as widgets
+            from IPython.display import display
 
-            code = self.convert()
-            # send code off to be tested !
+            name = fn.__name__
+            button = widgets.Button(description="Test " + name)
+            output = widgets.Output()
 
-            # Display the message within the output widget.
-            with output:
-                #print(cells)
-                print("Button clicked.", name)
+            def on_button_clicked(b):
+                self.write_file(TestFramework.STUDENT_FILE)
+                response = self.client.test_file(TestFramework.STUDENT_FILE)
+                # send code off to be tested !
 
-        button.on_click(on_button_clicked)
-        display(button, output)
+                # Display the message within the output widget.
+                with output:
+                    # print(cells)
+                    print("Button clicked.", name)
 
+            button.on_click(on_button_clicked)
+            display(button, output)
+
+        except ImportError:
+            return 'unable to test'
 
 
 #
 # assumes this file Tools.py is already installed via install_file
 #
 
+'''
+in a notebook to install a single file that's on a google drive:
+TOOL_ID = '1JaBOzRUM3pgbYVFpU640SjxCjH7SH98N'   # keep this: google id of Tools.py
+install_file(TOOL_ID, 'Tool.py', True)
+'''
 
 
-if __name__ == '__main__':
 
-    NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
-    LESSON_ID = 'LinearAlgebra:1:1'  # keep this
 
-    tester = TestFramework(NOTEBOOK_ID, LESSON_ID)
-
-    txt = open('test.json').read()
-    py_code = tester.parse(txt)
-    with open('wow.py', 'w') as fd:
-        fd.write(py_code)
-
-    '''
-    in a notebook to install a single file that's on a google drive:
-    TOOL_ID = '1JaBOzRUM3pgbYVFpU640SjxCjH7SH98N'   # keep this: google id of Tools.py
-    install_file(TOOL_ID, 'Tool.py', True)
-    '''
