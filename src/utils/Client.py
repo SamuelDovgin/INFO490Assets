@@ -48,12 +48,13 @@ def create_zipfile(dir_or_file):
         return output
 
 
-def send_zip(server, filename, assn_tag):
+def send_zip(server, filename, assn_tag, fn_name=None):
 
     with open(filename, 'rb') as fd:
         data = {'error_code': None, 'payload': {}}
         r = requests.post(server,
-                          data={"assignment": assn_tag},
+                          data={"assignment": assn_tag,
+                                "fn": fn_name},
                           files={"archive": (filename, fd)})
 
         if r.status_code == 200:
@@ -66,20 +67,32 @@ def send_zip(server, filename, assn_tag):
 
 class ClientTest(object):
 
-    def __init__(self, server, user, lesson_id):
-        self.server = server
-        self.user = user
-        self.lesson_id = lesson_id
+    def __init__(self, server, lesson_id):
 
-    def test_file(self, filename):
+        assert lesson_id is not None, "bad init"
+
+        self.server = server
+        self.lesson_id = lesson_id
+        self.user = None
+
+
+    def test_file(self, filename, fn_name=None):
+
+        print("test", filename, self.lesson_id, fn_name)
 
         zip_file = create_zipfile(filename)
-        response = send_zip(self.server, zip_file, self.lesson_id)
+        response = send_zip(self.server, zip_file, self.lesson_id, fn_name)
 
-        error = response['error_code']
+        error   = response['error_code']
         payload = response['payload']
         if error is None:
-            print(json.loads(payload['test_result']))
+            result = json.loads(payload['test_result'])
+            return result
         else:
             print('ERROR', error)
+
+
+    def test_function(self, filename, fn_name):
+        result = self.test_file(filename, fn_name)
+        print(result)
 

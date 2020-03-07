@@ -40,42 +40,44 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
 class TestFramework(object):
 
     JSON_FILE    = 'file.json'
-    STUDENT_FILE = 'student.py'
+    STUDENT_FILE = 'solution.py'
     SERVER       = 'http://75.156.71.78:8080/testzip'
 
-    def __init__(self, notebook_id, lesson_id, cmod):
+    def __init__(self, notebook_id, client):
 
         assert notebook_id is not None, "bad init"
-        assert lesson_id is not None, "bad init"
 
         self.notebook_id = notebook_id
-        self.user = None
+        self.backend = False
 
         try:
+            self.client = client
+
             # test if user enabled reading notebook
-            self.write_file(TestFramework.STUDENT_FILE)
+            user = self.write_file(TestFramework.STUDENT_FILE)
+            client.user = user
 
             import ipywidgets as widgets
             from IPython.display import display
-            self.client = cmod.ClientTest(TestFramework.SERVER, lesson_id, self.user)
-        except ImportError:
-            self.client = None
+        except ImportError as e:
+            self.backend = True
 
     def hello_world(self):
-        if self.client is not None:
-           print("Hello!")
+        if self.backend:
+            print("Hello! (backend)")
         else:
-           print("Hello! (backend)")
+            print("Hello!")
 
     def write_file(self, fn=STUDENT_FILE):
+        # download the notebook (it's a json file) if it's readable
         text = install_gd_file(self.notebook_id, TestFramework.JSON_FILE, force=True, persist=False)
         if not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-        py_code = self.parse(text)
+        py_code, user = self.parse(text)
         with open(fn, 'w') as fd:
             fd.write(py_code)
-        return py_code
+        return user
 
     def parse(self, text):
 
@@ -86,13 +88,14 @@ class TestFramework(object):
 
         code = json.loads(text)
         lines = []
+        user = None
         for cell in code['cells']:
             if cell['cell_type'] == 'code':
                 meta = cell.get('metadata', {})
                 info = meta.get('executionInfo', {})
-                user = info.get('user', None)
-                if user is not None and self.user is None:
-                    self.user = {'name': user['displayName'], 'id': user['userId']}
+                user_info = info.get('user', None)
+                if user is not None and user_info is None:
+                    user = {'name': user['displayName'], 'id': user['userId']}
 
                 for line in cell['source']:
                     if len(line) > 0 and line[0] not in ['!', '%']:
@@ -105,33 +108,43 @@ class TestFramework(object):
                 #    print("#", line, end='')
                 #print('\n')
 
-        return '\n'.join(lines)
+        return '\n'.join(lines), user
 
     def test_function(self, fn):
-        pass
+
+        assert fn is not None, "fn is None"
+
+        if callable(fn):
+            fn = fn.__name__
+
+        self.write_file(TestFramework.STUDENT_FILE)
+        response = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+        print(response)
 
     def test_with_button(self, fn):
 
-        if self.client is None:
+        if self.backend is not None:
             return 'unable to test'
+
+        if callable(fn):
+            fn = fn.__name__
 
         try:
             import ipywidgets as widgets
             from IPython.display import display
 
-            name = fn.__name__
-            button = widgets.Button(description="Test " + name)
+            button = widgets.Button(description="Test " + fn)
             output = widgets.Output()
 
-            def on_button_clicked(b):
+            def on_button_clicked():
                 self.write_file(TestFramework.STUDENT_FILE)
-                response = self.client.test_file(TestFramework.STUDENT_FILE)
+                response = self.client.test_function(TestFramework.STUDENT_FILE, fn)
                 # send code off to be tested !
 
                 # Display the message within the output widget.
                 with output:
                     # print(cells)
-                    print("Button clicked.", name)
+                    print("Button clicked.", fn)
 
             button.on_click(on_button_clicked)
             display(button, output)
