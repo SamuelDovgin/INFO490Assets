@@ -147,7 +147,7 @@ class TestFramework(object):
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
                         print("score ", score)
                         print("if you change", fn, "you must re-run that cell first")
-                    button.disabled = True
+                    #button.disabled = True
 
             button.on_click(on_button_clicked)
             display(button, output)
