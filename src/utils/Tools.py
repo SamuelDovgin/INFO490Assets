@@ -13,29 +13,29 @@ print(dir(tester))
 
 import sys
 import json
+import urllib.parse
+import urllib.request
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
-  import os
-  import urllib
-  import urllib.parse
-  import urllib.request
-  #import importlib
 
-  #if not force and os.path.exists(filename):
-  #  with open(filename, 'r') as fd:
-  #    return fd.read()
+    #import importlib
+    if not force and os.path.exists(filename):
+        print("reading cached version")
+        with open(filename, 'r') as fd:
+           return fd.read()
 
-  baseurl = "https://drive.google.com/uc"
-  params = {"export" : "download", "id": doc_id}
+    baseurl = "https://drive.google.com/uc"
+    params = {"export": "download", "id": doc_id}
 
-  url = baseurl + "?" + urllib.parse.urlencode(params)
-  r = urllib.request.urlopen(url)
-  text = str(r.read().decode('UTF-8'))
-  if persist:
-     with open(filename, 'w') as fd:
-       fd.write(text)
-  return text
+    url = baseurl + "?" + urllib.parse.urlencode(params)
+    print("attempt to load notebook", url)
 
+    r = urllib.request.urlopen(url)
+    text = str(r.read().decode('UTF-8'))
+    if persist:
+        with open(filename, 'w') as fd:
+            fd.write(text)
+    return text
 
 
 class TestFramework(object):
