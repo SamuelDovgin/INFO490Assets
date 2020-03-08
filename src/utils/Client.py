@@ -4,6 +4,12 @@ import os
 import json
 from zipfile import ZipFile
 
+logger = open("debug.log", "w")
+
+def log(*args):
+    to_write = " ".join([str(a) for a in args])
+    logger.write(to_write + '\n')
+    logger.flush()
 
 
 def valid_file(fn):
@@ -13,6 +19,7 @@ def valid_file(fn):
         if fn.endswith(b):
             return False
     return True
+
 
 def create_zipfile(dir_or_file):
 
@@ -39,10 +46,10 @@ def create_zipfile(dir_or_file):
                         # create complete filepath of file in directory
                         fq_path = os.path.join(folderName, filename)
                         # Add file to zip
-                        print("adding", fq_path)
+                        log("adding", fq_path)
                         zipObj.write(fq_path)
         else:
-            print("adding", dir_or_file)
+            log("adding", dir_or_file)
             zipObj.write(dir_or_file)
 
         return output
@@ -50,29 +57,30 @@ def create_zipfile(dir_or_file):
 
 def send_zip(server, filename, assn_tag, fn_name=None):
 
+    end_point = "{:s}/testzip".format(server)
+
     with open(filename, 'rb') as fd:
         data = {'error_code': None, 'payload': {}}
-        r = requests.post(server,
-                          data={"assignment": assn_tag,
-                                "fn": fn_name},
-                          files={"archive": (filename, fd)})
+        post_data = {"assignment": assn_tag, "fn": fn_name}
+        response = requests.post(end_point, data=post_data,
+                                            files={"archive": (filename, fd)})
 
-        if r.status_code == 200:
-            data = json.loads(r.text)
+        if response.status_code == 200:
+            data = response.json()  # json.loads(r.text)
         else:
-            data['error_code'] = r.status_code
+            data['error_code'] = response.status_code
 
         return data
 
-
 try:
     backend = False
-    SERVER = 'http://75.156.71.78:8080/testzip'
+    SERVER = 'http://75.156.71.78:8080'
     import ipywidgets as widgets
     from IPython.display import display
 except ImportError as e:
     backend = True
-    SERVER = 'http//192.168.1.78:8080/testzip'
+    SERVER = 'http://127.0.0.1:8080'
+    SERVER = 'http://192.168.1.78:8080'
 
 
 class ClientTest(object):
@@ -80,30 +88,32 @@ class ClientTest(object):
     def __init__(self, lesson_id, server=SERVER):
 
         assert lesson_id is not None, "bad init"
+        print("server at", server)
 
         self.server = server
         self.lesson_id = lesson_id
         self.user = None
         self.backend = backend
 
-
     def test_file(self, filename, fn_name=None):
 
-        print("test", filename, self.lesson_id, fn_name)
+        log("test", filename, self.lesson_id, fn_name)
 
         zip_file = create_zipfile(filename)
         response = send_zip(self.server, zip_file, self.lesson_id, fn_name)
 
-        error   = response['error_code']
-        payload = response['payload']
+        error = response['error_code']
         if error is None:
-            result = json.loads(payload['test_result'])
+            payload = response['payload']
+            result  = payload['test_result']
             return result
         else:
-            print('ERROR', error)
-
+            return error
 
     def test_function(self, filename, fn_name):
         result = self.test_file(filename, fn_name)
-        print(result)
+        for t in result['tests']:
+            if t['name'] == fn_name:
+                return t['score'], t['max_score']
+        return 0, 0
 
