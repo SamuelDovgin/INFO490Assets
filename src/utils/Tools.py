@@ -127,8 +127,6 @@ class TestFramework(object):
             from IPython.display import display
 
             button = widgets.Button(description="Test " + fn)
-            fail = widgets.ButtonStyle(button_color='red')
-            success = widgets.ButtonStyle(button_color='green')
             output = widgets.Output()
 
             def on_button_clicked(input):
@@ -139,13 +137,14 @@ class TestFramework(object):
 
                 # Display the message within the output widget.
                 with output:
-                    print("Button clicked.", fn, input)
+                    #print("Button clicked.", fn, input)
                     if score == max_score:
-                        button.style = success
+                        button.style = widgets.ButtonStyle(button_color='green')
                         button.description = 'PASS'
                         print("score ", score)
+                        print("if you change", fn, "you must re-run that cell first")
                     else:
-                        button.style = fail
+                        button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
                         print("score ", score)
 
