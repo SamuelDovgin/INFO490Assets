@@ -143,11 +143,11 @@ class TestFramework(object):
                     if score == max_score:
                         button.style = success
                         button.description = 'PASS'
-                        print("score0", score)
+                        print("score ", score)
                     else:
                         button.style = fail
-                        button.description = 'FAIL: {:s}/{:s}'.format(score, max_score)
-                        print("score1", score)
+                        button.description = 'FAIL: {}/{}'.format(score, max_score)
+                        print("score ", score)
 
             button.on_click(on_button_clicked)
             display(button, output)
