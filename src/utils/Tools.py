@@ -21,9 +21,9 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
   import urllib.request
   #import importlib
 
-  if not force and os.path.exists(filename):
-    with open(filename, 'r') as fd:
-      return fd.read()
+  #if not force and os.path.exists(filename):
+  #  with open(filename, 'r') as fd:
+  #    return fd.read()
 
   baseurl = "https://drive.google.com/uc"
   params = {"export" : "download", "id": doc_id}
@@ -142,11 +142,11 @@ class TestFramework(object):
                         button.style = widgets.ButtonStyle(button_color='green')
                         button.description = 'PASS'
                         print("score ", score)
-                        print("if you change", fn, "you must re-run that cell first")
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
                         print("score ", score)
+                        print("if you change", fn, "you must re-run that cell first")
 
             button.on_click(on_button_clicked)
             display(button, output)

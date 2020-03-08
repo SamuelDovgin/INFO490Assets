@@ -4,7 +4,7 @@ import os
 import json
 from zipfile import ZipFile
 
-logger = open("debug.log", "w")
+logger = open("debug.txt", "w")
 
 def log(*args):
     to_write = " ".join([str(a) for a in args])
