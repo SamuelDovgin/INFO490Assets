@@ -1,6 +1,7 @@
 # be sure to run me after filling it in
 NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
-LESSON_ID   = 'LinearAlgebra:1:1'                  # keep this
+LESSON_ID   = 'LinearAlgebra:1:1'
+LESSON_ID = '00'                 # keep this
 # !python --version
 #!git clone https://github.com/NSF-EC/INFO490Assets.git info490
 def install_testing_framework():
@@ -9,7 +10,7 @@ def install_testing_framework():
       from info490.src.utils import Tools,Client
       importlib.reload(Tools)
       importlib.reload(Client)
-      return Tools.TestFramework(NOTEBOOK_ID, Client(LESSON_ID))
+      return Tools.TestFramework(NOTEBOOK_ID, Client.ClientTest(LESSON_ID))
    except ImportError as e:
      print(str(e))
      class Nop(object):
