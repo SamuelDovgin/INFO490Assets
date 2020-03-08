@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     def v1():
         zip_file = Client.create_zipfile('solution.py')
-        response = Client.send_zip(SERVER, zip_file, LESSON_ID, 'simple_add')
+        response = Client.send_zip(Tools.SERVER, zip_file, LESSON_ID, 'simple_add')
 
         error   = response['error_code']
         if error is None:
@@ -41,10 +41,6 @@ if __name__ == '__main__':
             print(payload['test_result'])
         else:
             print('ERROR', error)
-
-
-
-
 
     def test_parser():
         import student

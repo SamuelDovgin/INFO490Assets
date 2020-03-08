@@ -1,15 +1,23 @@
 
 import requests
-import os
-import json
 from zipfile import ZipFile
 
-logger = open("debug.txt", "w")
+import sys
+import os
 
-def log(*args):
-    to_write = " ".join([str(a) for a in args])
-    logger.write(to_write + '\n')
-    logger.flush()
+try:
+    backend = False
+    SERVER = 'http://75.156.71.78:8080'
+    import ipywidgets as widgets
+    from IPython.display import display
+except ImportError as e:
+    backend = True
+    SERVER = 'http://127.0.0.1:8080'
+    SERVER = 'http://192.168.1.78:8080'
+
+
+sys.path.append('..')
+from utils.Tools import logger
 
 
 def valid_file(fn):
@@ -46,10 +54,10 @@ def create_zipfile(dir_or_file):
                         # create complete filepath of file in directory
                         fq_path = os.path.join(folderName, filename)
                         # Add file to zip
-                        log("adding", fq_path)
+                        logger.log("adding", fq_path)
                         zipObj.write(fq_path)
         else:
-            log("adding", dir_or_file)
+            logger.log("adding", dir_or_file)
             zipObj.write(dir_or_file)
 
         return output
@@ -72,23 +80,13 @@ def send_zip(server, filename, assn_tag, fn_name=None):
 
         return data
 
-try:
-    backend = False
-    SERVER = 'http://75.156.71.78:8080'
-    import ipywidgets as widgets
-    from IPython.display import display
-except ImportError as e:
-    backend = True
-    SERVER = 'http://127.0.0.1:8080'
-    SERVER = 'http://192.168.1.78:8080'
-
 
 class ClientTest(object):
 
     def __init__(self, lesson_id, server=SERVER):
 
         assert lesson_id is not None, "bad init"
-        print("server at", server)
+        logger.log("server at", server)
 
         self.server = server
         self.lesson_id = lesson_id
@@ -97,7 +95,7 @@ class ClientTest(object):
 
     def test_file(self, filename, fn_name=None):
 
-        log("test", filename, self.lesson_id, fn_name)
+        logger.log("test", filename, self.lesson_id, fn_name)
 
         zip_file = create_zipfile(filename)
         response = send_zip(self.server, zip_file, self.lesson_id, fn_name)
@@ -106,6 +104,26 @@ class ClientTest(object):
         if error is None:
             payload = response['payload']
             result  = payload['test_result']
+            if result['score'] == 0:
+
+                # this gives some info back
+                print(result)
+
+                ''' 
+                could loop through all the tests
+                looking at 'output' filed
+                and make sense of the error
+                import re
+                p = r'File *solution.py'
+                m = re.search(p, payload['stdout'])
+                print("SEATVH", payload['stdout'])
+                if m is not None:
+                    print(m)
+                else:
+                   print(error)
+                   print(payload)
+                '''
+
             return result
         else:
             return error

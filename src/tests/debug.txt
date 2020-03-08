@@ -1,2 +1,0 @@
-test solution.py 00 simple_add
-adding solution.py
