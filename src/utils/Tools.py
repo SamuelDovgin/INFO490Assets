@@ -127,7 +127,8 @@ class TestFramework(object):
             from IPython.display import display
 
             button = widgets.Button(description="Test " + fn)
-            success = widgets.ButtonStyle('success')
+            fail = widgets.ButtonStyle(button_color='red')
+            success = widgets.ButtonStyle(button_color='green')
             output = widgets.Output()
 
             def on_button_clicked(input):
@@ -144,6 +145,7 @@ class TestFramework(object):
                         button.description = 'PASS'
                         print("score0", score)
                     else:
+                        button.style = fail
                         button.description = 'FAIL: {:s}/{:s}'.format(score, max_score)
                         print("score1", score)
 
