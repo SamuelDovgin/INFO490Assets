@@ -3,11 +3,13 @@ NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
 LESSON_ID   = 'LinearAlgebra:1:1'
 LESSON_ID = '00'                 # keep this
 # !python --version
-#!cd info490; git pull
+#!git clone https://github.com/NSF-EC/INFO490Assets.git info490
 def install_testing_framework():
    try:
       import importlib
-      from info490.src.utils import Tools, Client
+      import sys
+      sys.path.append('info490/src/utils')
+      import Tools, Client
       importlib.reload(Tools)
       importlib.reload(Client)
 
@@ -15,19 +17,20 @@ def install_testing_framework():
    except ImportError as e:
      # happens on the test side, or if code never mounted
      class Nop(object):
-        def nop(*args, **kw): return("unable to test")
+        def __init__(self, e): self.e = str(e)
+        def nop(self, *args, **kw): return("unable to test:", self.e)
         def __getattr__(self, _): return self.nop
-     return Nop()
+     return Nop(e)
 
 tester = install_testing_framework()
 tester.hello_world()
 def simple_add(a,b):
-  return a+b-10+10
+  return a+b*8
 
 tester.test_with_button(simple_add)
 #tester.test_function(simple_add)
-from google.colab import drive
-drive.mount('/content/drive/My\ Drive/Colab\ Notebooks')
+#from google.colab import drive
+#drive.mount('/content/drive/My\ Drive/Colab\ Notebooks')
 # https://www.dataquest.io/blog/advanced-jupyter-notebooks-tutorial/
 ## https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228
 # https://colab.research.google.com/github/fbkarsdorp/python-course/blob/master/answerbook/Chapter%2010%20-%20Learning%20without%20Supervision.ipynb#scrollTo=GVu_RoIarsWI

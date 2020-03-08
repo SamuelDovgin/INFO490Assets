@@ -29,7 +29,9 @@ if __name__ == '__main__':
     client = Client.ClientTest(LESSON_ID)
     tester = Tools.TestFramework(NOTEBOOK_ID, client)
     tester.hello_world()
-    tester.test_function('simple_add')
+
+    def test_grader():
+        tester.test_function('simple_add')
 
     def v1():
         zip_file = Client.create_zipfile('solution.py')
@@ -43,8 +45,10 @@ if __name__ == '__main__':
             print('ERROR', error)
 
     def test_parser():
-        import student
         txt = open('test.json').read()
-        py_code = tester.parse(txt)
+        py_code,user,ts = tester.parse(txt)
+        print(user, ts)
         with open('wow.py', 'w') as fd:
             fd.write(py_code)
+
+    test_grader()
