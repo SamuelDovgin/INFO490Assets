@@ -63,7 +63,7 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
 
 class TestFramework(object):
 
-    JSON_FILE    = 'file.json'
+    JSON_FILE    = 'solution.json'
     STUDENT_FILE = 'solution.py'
 
     def __init__(self, notebook_id, client):
@@ -77,8 +77,10 @@ class TestFramework(object):
         # test if user enabled reading notebook
         user, ts = self.write_file(TestFramework.STUDENT_FILE)
         client.user = user
+        self.max_time = ts
 
     def write_file(self, fn=STUDENT_FILE):
+
         # download the notebook (it's a json file) if it's readable
         text = install_gd_file(self.notebook_id, TestFramework.JSON_FILE, force=True, persist=True)
         if text is None or not text.find('{"nbformat') == 0:
@@ -94,9 +96,6 @@ class TestFramework(object):
         #logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
         with open(fn, 'w') as fd:
             fd.write(py_code)
-
-        if ts > self.max_time:
-            self.max_time = ts
 
         return user, ts
 
@@ -122,7 +121,6 @@ class TestFramework(object):
         timestamp = 0
         if len(items) > 0:
             timestamp = items[0].get('timestamp', 0)
-            print(timestamp)
 
         lines = []
         user = None
@@ -135,7 +133,7 @@ class TestFramework(object):
                 if ts > max_time:
                     max_time = ts
                 user_info = info.get('user', None)
-                if user is not None and user_info is None:
+                if user is not None and user_info is not None:
                     user = {'name': user['displayName'], 'id': user['userId']}
 
                 for line in cell['source']:
@@ -159,7 +157,7 @@ class TestFramework(object):
         tf = self.max_time/1000
         tf = time.ctime(tf)
         if self.client.backend:
-            print("Hello! (backend)", tf)
+            print("Hello! (backend)", self.max_time, tf)
         else:
             print("Hello!", tf)
 
@@ -170,7 +168,7 @@ class TestFramework(object):
         if callable(fn):
             fn = fn.__name__
 
-        self.write_file(TestFramework.STUDENT_FILE)
+        u, ts = self.write_file(TestFramework.STUDENT_FILE)
         score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
         print(score, max_score)
 
@@ -191,7 +189,7 @@ class TestFramework(object):
 
             def on_button_clicked(input):
 
-                self.write_file(TestFramework.STUDENT_FILE)
+                u, ts = self.write_file(TestFramework.STUDENT_FILE)
                 # send code off to be tested !
                 score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
 

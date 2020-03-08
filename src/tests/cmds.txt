@@ -1,0 +1,3 @@
+  python -mjson.tool solution.json  > a.json
+  python -mjson.tool solution.json  > b.json
+  diff a.json b.json 
