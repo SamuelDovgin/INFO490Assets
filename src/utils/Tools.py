@@ -111,8 +111,8 @@ class TestFramework(object):
             fn = fn.__name__
 
         self.write_file(TestFramework.STUDENT_FILE)
-        response = self.client.test_function(TestFramework.STUDENT_FILE, fn)
-        print(response)
+        score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+        print(score, max_score)
 
     def test_with_button(self, fn):
 
@@ -130,14 +130,19 @@ class TestFramework(object):
             output = widgets.Output()
 
             def on_button_clicked(input):
+
                 self.write_file(TestFramework.STUDENT_FILE)
-                response = self.client.test_function(TestFramework.STUDENT_FILE, fn)
                 # send code off to be tested !
+                score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
 
                 # Display the message within the output widget.
                 with output:
-                    # print(cells)
-                    print("Button clicked.", fn, input, response)
+                    print("Button clicked.", fn, input)
+                    if score == max_score:
+                        button.style = 'success'
+                        print("score0", score)
+                    else:
+                        print("score1", score)
 
             button.on_click(on_button_clicked)
             display(button, output)
