@@ -21,9 +21,10 @@ def install_testing_framework():
 tester = install_testing_framework()
 tester.hello_world()
 def simple_add(a,b):
-  return a+b
+  return a*20
 
 tester.test_with_button(simple_add)
+#tester.test_function(simple_add)
 # https://www.dataquest.io/blog/advanced-jupyter-notebooks-tutorial/
 ## https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228
 # https://colab.research.google.com/github/fbkarsdorp/python-course/blob/master/answerbook/Chapter%2010%20-%20Learning%20without%20Supervision.ipynb#scrollTo=GVu_RoIarsWI
