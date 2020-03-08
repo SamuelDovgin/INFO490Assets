@@ -24,9 +24,9 @@ if __name__ == '__main__':
     LESSON_ID = '00'  # keep this
 
     # needs to be local server NOT THE WAN address
-    SERVER = 'http://192.168.1.78:8080/testzip'
+    #SERVER = 'http://192.168.1.78:8080/testzip'
 
-    client = Client.ClientTest(LESSON_ID, SERVER)
+    client = Client.ClientTest(LESSON_ID)
     tester = Tools.TestFramework(NOTEBOOK_ID, client)
     tester.hello_world()
     tester.test_function('simple_add')
@@ -36,9 +36,9 @@ if __name__ == '__main__':
         response = Client.send_zip(SERVER, zip_file, LESSON_ID, 'simple_add')
 
         error   = response['error_code']
-        payload = response['payload']
         if error is None:
-            print(json.loads(payload['test_result']))
+            payload = response['payload']
+            print(payload['test_result'])
         else:
             print('ERROR', error)
 
