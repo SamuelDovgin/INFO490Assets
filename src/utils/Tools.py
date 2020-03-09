@@ -188,17 +188,17 @@ class TestFramework(object):
                 # Display the message within the output widget.
                 with output:
 
-                    clear_output()  # also removes the button
-                    print("using notebook version", self.max_time)
-                    #print("Button clicked.", fn, input)
+                    clear_output()  # also removes the button if put before output
+                    # print("Button clicked.", fn, input)
                     if score == max_score:
                         button.style = widgets.ButtonStyle(button_color='green')
                         button.description = 'PASS'
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
-                        print("if you change", fn, "save the notebook before retesting:", msg)
-                    #button.disabled = True
+                        print("using notebook version:", self.max_time, msg)
+                        print("if you change", fn, "save the notebook before retesting:")
+                    # button.disabled = True
 
             button.on_click(on_button_clicked)
             display(button, output)
