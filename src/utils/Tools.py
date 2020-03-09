@@ -26,13 +26,13 @@ from utils import Client
 def install_testing_framework(notebook_id, lesson_id):
 
     class Nop(object):
-        def __init__(self, e): self.e = str(e)
+        def __init__(self, e): self.e = e
         def nop(self, *args, **kw): return("unable to test:", self.e)
         def __getattr__(self, _): return self.nop
 
     try:
-        import importlib
-        import sys
+        #import importlib
+        #import sys
         #sys.path.append('info490/src/utils')
         #importlib.reload(Tools)
         #importlib.reload(Client)
@@ -40,7 +40,7 @@ def install_testing_framework(notebook_id, lesson_id):
 
     except ImportError as e:
         # happens on the test side, or if code never mounted
-        return Nop(e)
+        return Nop(str(e))
 
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
