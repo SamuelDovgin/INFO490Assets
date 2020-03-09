@@ -20,6 +20,27 @@ from datetime import datetime
 import time
 
 from utils.SimpleLogger import logger
+from utils import Client
+
+
+def install_testing_framework(notebook_id, lesson_id):
+
+    class Nop(object):
+        def __init__(self, e): self.e = str(e)
+        def nop(self, *args, **kw): return("unable to test:", self.e)
+        def __getattr__(self, _): return self.nop
+
+    try:
+        import importlib
+        import sys
+        #sys.path.append('info490/src/utils')
+        #importlib.reload(Tools)
+        #importlib.reload(Client)
+        return TestFramework(notebook_id, Client.ClientTest(lesson_id))
+
+    except ImportError as e:
+        # happens on the test side, or if code never mounted
+        return Nop(e)
 
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
@@ -93,17 +114,6 @@ class TestFramework(object):
 
     def parse(self, text):
 
-        '''
-           "metadata":{"id":"2q1l6oLFOjxV","colab_type":"code","outputId":"8a9a82ab-e6c8-4a86-a0ac-d6a045a519da","executionInfo":{"status":"ok","timestamp":1583528004120,"user_tz":480,"elapsed":624,
-           "user":{"displayName":"mike haberman
-
-           "metadata":{
-           "colab":{"name":"Copy of Chapter 10 - Learning without Supervision.ipynb",
-               "provenance":[
-                  {"file_id":"https://github.com/fbkarsdorp/python-course/blob/master/answerbook/Chapter%2010%20-%20Learning%20without%20Supervision.ipynb",
-                   "timestamp":1583470815612}]},
-        '''
-
         code = json.loads(text)
 
         # creation timestamp
@@ -134,10 +144,6 @@ class TestFramework(object):
                         lines.append(clean)
             elif cell['cell_type'] == 'markdown':
                 pass
-                #print('# -------- markdown --------')
-                #for line in cell['source']:
-                #    print("#", line, end='')
-                #print('\n')
 
         return '\n'.join(lines), user, max_time
 
@@ -152,6 +158,11 @@ class TestFramework(object):
             print("Hello! (backend)", self.max_time, tf)
         else:
             print("Hello!", self.max_time, tf)
+
+    def test_notebook(self):
+        u, ts = self.write_file(TestFramework.STUDENT_FILE)
+        result = self.client.test_file(TestFramework.STUDENT_FILE)
+        return result
 
     def test_function(self, fn):
 
