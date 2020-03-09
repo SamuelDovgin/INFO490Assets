@@ -5,13 +5,13 @@ LESSON_ID = '00'
 #!git clone https://github.com/NSF-EC/INFO490Assets.git info490
 def install_testing_framework(notebook_id, lesson_id):
     import sys
-    sys.path.append('info490/src/utils')
+    sys.path.append('info490/src')
     class Nop(object):
         def __init__(self, e): self.e = e
         def nop(self, *args, **kw): return("unable to test:", self.e)
         def __getattr__(self, _): return self.nop
     try:
-        from Tools import TestFramework,Client
+        from utils.Tools import TestFramework,Client
         return TestFramework(notebook_id, Client.ClientTest(lesson_id))
     except ImportError as e:
         # happens on the test side, or if code never mounted
@@ -22,8 +22,8 @@ tester.hello_world()
 def simple_addr(a,b):
   return a+b
 
-tester.test_with_button(simple_addr)
-#print(tester.test_function(simple_add))
+#tester.test_with_button(simple_add)
+print(tester.test_function(simple_addr))
 # https://www.dataquest.io/blog/advanced-jupyter-notebooks-tutorial/
 ## https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228
 # https://colab.research.google.com/github/fbkarsdorp/python-course/blob/master/answerbook/Chapter%2010%20-%20Learning%20without%20Supervision.ipynb#scrollTo=GVu_RoIarsWI

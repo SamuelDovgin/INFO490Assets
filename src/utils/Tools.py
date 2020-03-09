@@ -160,7 +160,7 @@ class TestFramework(object):
     def hello_world(self):
         tf = self.max_time/1000
         tf = time.ctime(tf)
-        if self.client.backend:
+        if self.client.is_backend:
             print("Hello! (backend)", self.max_time, tf)
         else:
             print("Hello!", self.max_time, tf)
@@ -183,8 +183,8 @@ class TestFramework(object):
 
     def test_with_button(self, fn):
 
-        if self.client.backend:
-            return 'unable to test on local/server side'
+        if self.client.is_backend:
+            return 'unable to test with gui on server side'
 
         if callable(fn):
             fn = fn.__name__
@@ -223,7 +223,7 @@ class TestFramework(object):
             display(button, output)
 
         except ImportError as e:
-            return 'unable to test: ' + str(e)
+            return 'unable to test with gui: ' + str(e)
 
 
 #
@@ -235,7 +235,3 @@ in a notebook to install a single file that's on a google drive:
 TOOL_ID = '1JaBOzRUM3pgbYVFpU640SjxCjH7SH98N'   # keep this: google id of Tools.py
 install_file(TOOL_ID, 'Tool.py', True)
 '''
-
-
-
-

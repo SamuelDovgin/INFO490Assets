@@ -91,7 +91,7 @@ class ClientTest(object):
         self.server = server
         self.lesson_id = lesson_id
         self.user = None
-        self.backend = backend
+        self.is_backend = backend
 
     def test_file(self, filename, fn_name=None):
 
@@ -117,7 +117,7 @@ class ClientTest(object):
                 import re
                 p = r'File *solution.py'
                 m = re.search(p, payload['stdout'])
-                print("SEATVH", payload['stdout'])
+                print("SEARCH", payload['stdout'])
                 if m is not None:
                     print(m)
                 else:
@@ -135,5 +135,5 @@ class ClientTest(object):
             if t['name'] == fn_name:
                 return t['score'], t['max_score'], t['output'].strip()
         #print(result)
-        return None, None, "no tests"
+        return None, None, "no tests for " + fn_name
 
