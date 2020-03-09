@@ -31,8 +31,8 @@ if __name__ == '__main__':
     tester.hello_world()
 
     def test_grader():
-        result = tester.test_function('simple_add')
-        print(result)
+        tuple = tester.test_function('simple_add')
+        print(tuple)
 
     def v1():
         zip_file = Client.create_zipfile('solution.py')
