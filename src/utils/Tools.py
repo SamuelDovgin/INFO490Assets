@@ -162,7 +162,6 @@ class TestFramework(object):
 
         u, ts = self.write_file(TestFramework.STUDENT_FILE)
         score, max_score, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
-        print(score, max_score, msg)
         return score, max_score, msg
 
     def test_with_button(self, fn):
@@ -197,7 +196,7 @@ class TestFramework(object):
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
                         print("using notebook version:", self.max_time, msg)
-                        print("if you change", fn, "save the notebook before retesting:")
+                        print("if you change", fn, "save the notebook before retesting")
                     # button.disabled = True
 
             button.on_click(on_button_clicked)
