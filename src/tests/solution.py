@@ -1,8 +1,7 @@
 # be sure to run me after filling it in
 NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
-LESSON_ID   = 'LinearAlgebra:1:1'
-LESSON_ID = '00'                 # keep this
-# !python --version
+LESSON_ID   = 'LinearAlgebra:1:1' # keep this as is
+LESSON_ID = '00'
 #!git clone https://github.com/NSF-EC/INFO490Assets.git info490
 def install_testing_framework():
    try:
