@@ -208,10 +208,11 @@ class TestFramework(object):
                     # print("Button clicked.", fn, input)
                     if score is None:
                         button.style = widgets.ButtonStyle(button_color='yellow')
+                        print(msg)
                         button.description = 'No Tests'
                     elif score == max_score:
                         button.style = widgets.ButtonStyle(button_color='green')
-                        button.description = 'PASS'
+                        button.description = 'Pass!'
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
