@@ -169,9 +169,9 @@ class TestFramework(object):
             fn = fn.__name__
 
         u, ts = self.write_file(TestFramework.STUDENT_FILE)
-        score, max_score, output = self.client.test_function(TestFramework.STUDENT_FILE, fn)
-        print(score, max_score, output)
-        return score, max_score, output
+        score, max_score, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+        print(score, max_score, msg)
+        return score, max_score, msg
 
     def test_with_button(self, fn):
 

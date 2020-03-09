@@ -4,6 +4,7 @@ from zipfile import ZipFile
 
 import sys
 import os
+import json
 
 try:
     backend = False
@@ -106,7 +107,7 @@ class ClientTest(object):
             if result['score'] != 100:
                 # this gives some info back
                 #print(result)
-                logger.log(result)
+                logger.log(json.dumps(result))
 
                 ''' 
                 could loop through all the tests
