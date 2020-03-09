@@ -169,8 +169,9 @@ class TestFramework(object):
             fn = fn.__name__
 
         u, ts = self.write_file(TestFramework.STUDENT_FILE)
-        score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
-        print(score, max_score)
+        score, max_score, output = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+        print(score, max_score, output)
+        return score, max_score, output
 
     def test_with_button(self, fn):
 
@@ -190,21 +191,21 @@ class TestFramework(object):
             def on_button_clicked(input):
                 u, ts = self.write_file(TestFramework.STUDENT_FILE)
                 # send code off to be tested !
-                score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+                score, max_score, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
 
                 # Display the message within the output widget.
                 with output:
 
                     clear_output()  # also removes the button
+                    print("using notebook version", self.max_time)
                     #print("Button clicked.", fn, input)
                     if score == max_score:
                         button.style = widgets.ButtonStyle(button_color='green')
                         button.description = 'PASS'
-                        print("score ", score)
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
-                        button.description = 'FAIL: {}/{}'.format(score, max_score)
-                        print("if you change", fn, "save the notebook before retesting")
+                        button.description = 'FAIL: {}/{} {}'.format(score, max_score, msg)
+                        print("if you change", fn, "save the notebook before retesting:")
                     #button.disabled = True
 
             button.on_click(on_button_clicked)
