@@ -196,8 +196,6 @@ class TestFramework(object):
                 with output:
 
                     clear_output()  # also removes the button
-                    display(button, output)
-
                     #print("Button clicked.", fn, input)
                     if score == max_score:
                         button.style = widgets.ButtonStyle(button_color='green')
