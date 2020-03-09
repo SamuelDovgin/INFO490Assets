@@ -3,8 +3,10 @@ NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
 LESSON_ID   = 'LinearAlgebra:1:1' # keep this as is
 LESSON_ID = '00'
 #!git clone https://github.com/NSF-EC/INFO490Assets.git info490
+import sys
 sys.path.append('info490/src/utils')
 import Tools
+dir(Tools)
 tester = Tools.install_testing_framework(NOTEBOOK_ID, LESSON_ID)
 tester.hello_world()
 def simple_add(a,b):
