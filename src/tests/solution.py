@@ -3,16 +3,26 @@ NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
 LESSON_ID   = 'LinearAlgebra:1:1' # keep this as is
 LESSON_ID = '00'
 #!git clone https://github.com/NSF-EC/INFO490Assets.git info490
-import sys
-sys.path.append('info490/src/utils')
-import Tools
-dir(Tools)
-tester = Tools.install_testing_framework(NOTEBOOK_ID, LESSON_ID)
-tester.hello_world()
-def simple_add(a,b):
-  return a+b*8
+def install_testing_framework(notebook_id, lesson_id):
+    import sys
+    sys.path.append('info490/src/utils')
+    class Nop(object):
+        def __init__(self, e): self.e = e
+        def nop(self, *args, **kw): return("unable to test:", self.e)
+        def __getattr__(self, _): return self.nop
+    try:
+        from Tools import TestFramework,Client
+        return TestFramework(notebook_id, Client.ClientTest(lesson_id))
+    except ImportError as e:
+        # happens on the test side, or if code never mounted
+        return Nop(str(e))
 
-tester.test_with_button(simple_add)
+tester = install_testing_framework(NOTEBOOK_ID, LESSON_ID)
+tester.hello_world()
+def simple_addr(a,b):
+  return a+b
+
+tester.test_with_button(simple_addr)
 #print(tester.test_function(simple_add))
 # https://www.dataquest.io/blog/advanced-jupyter-notebooks-tutorial/
 ## https://towardsdatascience.com/google-drive-google-colab-github-dont-just-read-do-it-5554d5824228

@@ -23,25 +23,31 @@ from utils.SimpleLogger import logger
 from utils import Client
 
 
+'''
+#
+# it's important that this fails on the test/server side
+# so Nop is used when the solution.py is run directly
+#
 def install_testing_framework(notebook_id, lesson_id):
-
+    import sys
+    sys.path.append('info490/src/utils')
     class Nop(object):
         def __init__(self, e): self.e = e
         def nop(self, *args, **kw): return("unable to test:", self.e)
         def __getattr__(self, _): return self.nop
-
     try:
+        from Tools import TestFramework, Client
         #import importlib
-        #import sys
-        #sys.path.append('info490/src/utils')
         #importlib.reload(Tools)
         #importlib.reload(Client)
         return TestFramework(notebook_id, Client.ClientTest(lesson_id))
-
     except ImportError as e:
         # happens on the test side, or if code never mounted
         return Nop(str(e))
 
+tester = install_testing_framework(NOTEBOOK_ID, LESSON_ID)
+tester.hello_world()
+'''
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
 
@@ -178,7 +184,7 @@ class TestFramework(object):
     def test_with_button(self, fn):
 
         if self.client.backend:
-            return 'unable to test locally'
+            return 'unable to test on local/server side'
 
         if callable(fn):
             fn = fn.__name__
@@ -200,7 +206,10 @@ class TestFramework(object):
 
                     clear_output()  # also removes the button if put before output
                     # print("Button clicked.", fn, input)
-                    if score == max_score:
+                    if score is None:
+                        button.style = widgets.ButtonStyle(button_color='yellow')
+                        button.description = 'No Tests'
+                    elif score == max_score:
                         button.style = widgets.ButtonStyle(button_color='green')
                         button.description = 'PASS'
                     else:
