@@ -20,8 +20,6 @@ from datetime import datetime
 import time
 
 from utils.SimpleLogger import logger
-from utils import Client
-
 
 '''
 #
