@@ -134,6 +134,6 @@ class ClientTest(object):
         for t in result['tests']:
             if t['name'] == fn_name:
                 return t['score'], t['max_score'], t['output'].strip()
-        print(result)
-        return 0, 0, "no tests"
+        #print(result)
+        return None, None, "no tests"
 

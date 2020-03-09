@@ -31,7 +31,7 @@ if __name__ == '__main__':
     tester.hello_world()
 
     def test_grader_fn():
-        tuple = tester.test_function('simple_add')
+        tuple = tester.test_function('simple_addr')
         print(tuple)
 
     def test_grader():
@@ -62,3 +62,12 @@ if __name__ == '__main__':
 
     #test_grader()
     test_grader_fn()
+
+    #
+    # note this downloads the file (solution.py and solution.json)
+    # when you do python solution.py
+    # it needs to fail on the import ... otherwise
+    # it's possible that the test inside solution.py will overwrite itself
+    # when it downloads the same file on top of itself
+    # but it should still run fine
+    #
