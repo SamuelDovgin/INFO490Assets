@@ -21,6 +21,7 @@ import time
 
 from utils.SimpleLogger import logger
 
+
 def install_gd_file(doc_id, filename, force=False, persist=True):
 
     #import importlib
@@ -45,12 +46,11 @@ def install_gd_file(doc_id, filename, force=False, persist=True):
         text = str(r.read().decode('UTF-8'))
         if persist:
             with open(filename, 'w') as fd:
-                 fd.write(text)
+                fd.write(text)
         return text
     except Exception as e:
         print("unable to load notebook at", url, str(e))
         return None
-
 
 
 class TestFramework(object):
@@ -196,8 +196,8 @@ class TestFramework(object):
                         button.description = 'PASS'
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
-                        button.description = 'FAIL: {}/{} {}'.format(score, max_score, msg)
-                        print("if you change", fn, "save the notebook before retesting:")
+                        button.description = 'FAIL: {}/{}'.format(score, max_score)
+                        print("if you change", fn, "save the notebook before retesting:", msg)
                     #button.disabled = True
 
             button.on_click(on_button_clicked)
