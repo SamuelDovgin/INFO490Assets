@@ -182,13 +182,13 @@ class TestFramework(object):
 
         try:
             import ipywidgets as widgets
-            from IPython.display import display
+            from IPython.display import display, clear_output
 
             button = widgets.Button(description="Test " + fn)
             output = widgets.Output()
 
             def on_button_clicked(input):
-
+                clear_output()
                 u, ts = self.write_file(TestFramework.STUDENT_FILE)
                 # send code off to be tested !
                 score, max_score = self.client.test_function(TestFramework.STUDENT_FILE, fn)
@@ -203,8 +203,7 @@ class TestFramework(object):
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
-                        print("score ", score)
-                        print("if you change", fn, "you must save the notebook first")
+                        print("if you change", fn, "save the notebook before retesting")
                     #button.disabled = True
 
             button.on_click(on_button_clicked)
