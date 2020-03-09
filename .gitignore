@@ -2,6 +2,7 @@
 *.zip
 debug_log.txt
 solution.json
+solution.py
 
 
 # Byte-compiled / optimized / DLL files
