@@ -17,7 +17,8 @@ except ImportError as e:
     SERVER = 'http://192.168.1.78:8080'
 
 
-from utils.Tools import logger
+from utils.SimpleLogger import logger
+
 
 def valid_file(fn):
 

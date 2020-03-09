@@ -19,15 +19,7 @@ import requests
 from datetime import datetime
 import time
 
-class SimpleLogger(object):
-    def __init__(self):
-        self.logger = open("debug_log.txt", "w")
-
-    def log(self, *args):
-        to_write = " ".join([str(a) for a in args])
-        self.logger.write(to_write + '\n')
-        self.logger.flush()
-logger = SimpleLogger()
+from utils.SimpleLogger import logger
 
 def install_gd_file(doc_id, filename, force=False, persist=True):
 
