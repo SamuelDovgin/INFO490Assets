@@ -216,7 +216,12 @@ class TestFramework(object):
                         button.description = 'FAIL: {}/{}'.format(score, max_score)
                         print("using notebook version:", self.max_time, msg)
                         print("if you change", fn, "save the notebook before retesting")
-                    # button.disabled = True
+
+                    # since the button text changes
+                    # disabling the button, makes sense
+                    # otherwise, it's not clear that the user COULD press it again
+                    # this way it forces the user to reload the cell
+                    button.disabled = True
 
             button.on_click(on_button_clicked)
             display(button, output)
