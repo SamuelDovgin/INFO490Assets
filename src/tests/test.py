@@ -30,14 +30,19 @@ if __name__ == '__main__':
     tester = Tools.TestFramework(NOTEBOOK_ID, client)
     tester.hello_world()
 
-    def test_grader():
+    def test_grader_fn():
         tuple = tester.test_function('simple_add')
         print(tuple)
 
-    def v1():
-        zip_file = Client.create_zipfile('solution.py')
-        response = Client.send_zip(Tools.SERVER, zip_file, LESSON_ID, 'simple_add')
+    def test_grader():
+        tuple = tester.test_notebook()
+        # use leaderboard field to fill in data to be plotted
+        print(tuple)
 
+    def debug_test():
+        # use the client directly
+        zip_file = Client.create_zipfile('solution.py')
+        response = Client.send_zip(Client.SERVER, zip_file, LESSON_ID, 'simple_add')
         error   = response['error_code']
         if error is None:
             payload = response['payload']
@@ -45,11 +50,15 @@ if __name__ == '__main__':
         else:
             print('ERROR', error)
 
-    def test_parser():
-        txt = open('test.json').read()
+    def test_parser(fn, outfn):
+        txt = open(fn).read()
         py_code,user,ts = tester.parse(txt)
         print(user, ts)
-        with open('wow.py', 'w') as fd:
+        with open(outfn, 'w') as fd:
             fd.write(py_code)
 
-    test_grader()
+    #debug_test()
+    #test_parser('test.json', outfn='wow.py')
+
+    #test_grader()
+    test_grader_fn()
