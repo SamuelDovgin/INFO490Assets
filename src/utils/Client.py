@@ -102,10 +102,11 @@ class ClientTest(object):
         if error is None:
             payload = response['payload']
             result  = payload['test_result']
-            if result['score'] == 0:
 
+            if result['score'] != 100:
                 # this gives some info back
-                print(result)
+                #print(result)
+                logger.log(result)
 
                 ''' 
                 could loop through all the tests
@@ -130,6 +131,6 @@ class ClientTest(object):
         result = self.test_file(filename, fn_name)
         for t in result['tests']:
             if t['name'] == fn_name:
-                return t['score'], t['max_score']
-        return 0, 0
+                return t['score'], t['max_score'], t['output'].strip()
+        return 0, 0, "no tests"
 
