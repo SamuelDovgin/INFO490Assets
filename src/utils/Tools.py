@@ -159,7 +159,7 @@ class TestFramework(object):
         if self.client.backend:
             print("Hello! (backend)", self.max_time, tf)
         else:
-            print("Hello!", tf)
+            print("Hello!", self.max_time, tf)
 
     def test_function(self, fn):
 
