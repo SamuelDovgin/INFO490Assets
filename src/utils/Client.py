@@ -99,6 +99,7 @@ class ClientTest(object):
 
         zip_file = create_zipfile(filename)
         response = send_zip(self.server, zip_file, self.lesson_id, fn_name)
+        logger.log(response)
 
         error = response['error_code']
         if error is None:
@@ -125,15 +126,18 @@ class ClientTest(object):
                    print(payload)
                 '''
 
-            return result
+            return None, result
         else:
-            return error
+            return error, None
 
     def test_function(self, filename, fn_name):
-        result = self.test_file(filename, fn_name)
-        for t in result['tests']:
-            if t['name'] == fn_name:
-                return t['score'], t['max_score'], t['output'].strip()
-        #print(result)
-        return None, None, "no tests for " + fn_name
+        error, result = self.test_file(filename, fn_name)
+        if error is None:
+            for t in result['tests']:
+                if t['name'] == fn_name:
+                    return t['score'], t['max_score'], t['output'].strip()
+            #print(result)
+            return None, None, "no tests for " + fn_name
+        else:
+            return None, None, error
 

@@ -31,7 +31,7 @@ if __name__ == '__main__':
     tester.hello_world()
 
     def test_grader_fn():
-        tuple = tester.test_function('simple_addr')
+        tuple = tester.test_function('simple_add')
         print(tuple)
 
     def test_grader():
