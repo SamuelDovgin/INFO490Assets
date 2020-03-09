@@ -1,9 +1,25 @@
 
 
+'''
+python 2.7 hack
+import sys
+import os
+sys.path.append('..')
+parent_dir = os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/../utils')
+print('PARENT', parent_dir, __file__)
+sys.path.insert(0, parent_dir)
+print(sys.path)
+import Tools
+import Client
+'''
+
+
+# need python 3.6+
 import sys
 sys.path.append('..')
-from utils import Tools
+
 from utils import Client
+from utils import Tools
 
 def css_styling(snip):
     from IPython.core.display import HTML
@@ -13,7 +29,7 @@ def css_styling(snip):
     idx = txt.find('<style>')
     return HTML(txt[idx:] + snip)
 
-#css_styling('<div class="warning">TEST</div>'
+#css_styling('<div class="1warning">TEST</div>'
 
 if __name__ == '__main__':
 
@@ -27,22 +43,24 @@ if __name__ == '__main__':
     #SERVER = 'http://192.168.1.78:8080/testzip'
 
     client = Client.ClientTest(LESSON_ID)
-    tester = Tools.TestFramework(NOTEBOOK_ID, client)
-    tester.hello_world()
 
     def test_grader_fn():
+        tester = Tools.TestFramework(NOTEBOOK_ID, client)
+        tester.hello_world()
         tuple = tester.test_function('simple_add')
         print(tuple)
 
     def test_grader():
+        tester = Tools.TestFramework(NOTEBOOK_ID, client)
+        tester.hello_world()
         tuple = tester.test_notebook()
         # use leaderboard field to fill in data to be plotted
         print(tuple)
 
-    def debug_test():
+    def debug_test(filename, fn):
         # use the client directly
-        zip_file = Client.create_zipfile('solution.py')
-        response = Client.send_zip(Client.SERVER, zip_file, LESSON_ID, 'simple_add')
+        zip_file = Client.create_zipfile(filename)
+        response = Client.send_zip(Client.SERVER, zip_file, LESSON_ID, fn)
         error   = response['error_code']
         if error is None:
             payload = response['payload']
@@ -57,11 +75,14 @@ if __name__ == '__main__':
         with open(outfn, 'w') as fd:
             fd.write(py_code)
 
-    #debug_test()
+    # test a local file (MUST be named solution.py as the tests import this)
+    debug_test('solution.py', 'simple_add')
     #test_parser('test.json', outfn='wow.py')
 
+
+    # these download notebook
     #test_grader()
-    test_grader_fn()
+    #test_grader_fn()
 
     #
     # note this downloads the file (solution.py and solution.json)
@@ -70,4 +91,8 @@ if __name__ == '__main__':
     # it's possible that the test inside solution.py will overwrite itself
     # when it downloads the same file on top of itself
     # but it should still run fine
+    #
+    # TEST student asks to test simple_add, infinite loop
+    # TEST student asks to test simple_add,  BUT there is no simple_add function in the code
+    # TEST student asks to test simple_addr, BUT there is no test for that
     #
