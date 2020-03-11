@@ -14,8 +14,12 @@ class NBParser(object):
     def __init__(self):
         pass
 
-    def parse(self, text, remove_magic_cells=True, markdown=False):
+
+    def parse_code(self, text, as_is=False, remove_magic_cells=True):
         code = json.loads(text)
+
+        if as_is is True and remove_magic_cells is True:
+            print("warning, is_is flag takes priority")
 
         # creation timestamp
         metadata = code['metadata']
@@ -25,7 +29,6 @@ class NBParser(object):
         if len(items) > 0:
             timestamp = items[0].get('timestamp', 0)
 
-        text = []
         lines = []
         user = None
         max_time = timestamp
@@ -43,14 +46,15 @@ class NBParser(object):
                     user = {'name': user['displayName'], 'id': user['userId']}
 
                 for line in cell['source']:
-                    first_char = line.lstrip()
-                    if first_char in ['!', '%']:
-                        if remove_magic_cells:
-                            # abandon ship on the entire cell
-                            cell_code = []
-                            break
-                        else:
-                            line = 'pass #' + line
+                    if not as_is:
+                        first_char = line.lstrip()
+                        if len(first_char) > 0 and first_char[0] in ['!', '%']:
+                            if remove_magic_cells:
+                                # abandon ship on the entire cell
+                                cell_code = []
+                                break
+                            else:
+                                line = 'pass #' + line
 
                     if len(line) > 0:
                         clean = line.rstrip()
@@ -58,12 +62,18 @@ class NBParser(object):
 
                 lines.extend(cell_code)
 
-            elif markdown and cell['cell_type'] == 'markdown':
-                for l in cell['source']:
-                    text.append(l.strip())
-
-        # return ParseValues('\n'.join(lines), user, max_time)
-        if markdown:
-            return "\n".join(text)
-
         return '\n'.join(lines), user, max_time
+
+    def parse_markdown(self, text):
+
+        code = json.loads(text)
+
+        text = []
+        for cell in code['cells']:
+            if cell['cell_type'] == 'markdown':
+                for l in cell['source']:
+                    line = l.strip()
+                    if len(line) > 0:
+                        text.append(line.strip())
+
+        return "\n".join(text)
