@@ -48,10 +48,9 @@ tester = install_testing_framework(NOTEBOOK_ID, LESSON_ID)
 tester.hello_world()
 '''
 
-def install_gd_file(doc_id, filename, force=False, persist=False):
+def install_gd_file(doc_id, force=True, filename=None):
 
     import os
-    #import importlib
     if not force and os.path.exists(filename):
         logger.log("reading cached version")
         with open(filename, 'r') as fd:
@@ -71,7 +70,7 @@ def install_gd_file(doc_id, filename, force=False, persist=False):
         #print('DATE', r.headers)
 
         text = str(r.read().decode('UTF-8'))
-        if persist:
+        if filename is not None:
             with open(filename, 'w') as fd:
                 fd.write(text)
         return text
@@ -102,7 +101,7 @@ class TestFramework(object):
     def write_file(self, fn=STUDENT_FILE, as_is=False, remove_magic_cells=True):
 
         # download the notebook (it's a json file) if it's readable
-        text = install_gd_file(self.notebook_id, TestFramework.JSON_FILE, force=True, persist=True)
+        text = install_gd_file(self.notebook_id, force=True, filename=TestFramework.JSON_FILE)
         if text is None or not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
@@ -131,15 +130,20 @@ class TestFramework(object):
         else:
             print("Hello!", self.max_time, tf)
 
-    def test_raw_notebook(self):
+    def is_notebook_valid_python(self):
         u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=True)
-        result = self.client.test_file(TestFramework.STUDENT_FILE)
-        return result
+        e, r = self.client.test_file(TestFramework.STUDENT_FILE)
+        return e is None, e
+
+    def clean_notebook_for_download(self):
+        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
+        e, r = self.client.test_file(TestFramework.STUDENT_FILE)
+        return e is None, e
 
     def test_notebook(self):
         u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
-        result = self.client.test_file(TestFramework.STUDENT_FILE)
-        return result
+        e, r = self.client.test_file(TestFramework.STUDENT_FILE)
+        return e, r
 
     def test_function(self, fn):
 
@@ -184,7 +188,8 @@ class TestFramework(object):
                         button.description = 'Pass!'
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
-                        button.description = 'FAIL: {}/{}'.format(score, max_score)
+                        #button.description = 'FAIL: {}/{}'.format(score, max_score)
+                        button.description = 'FAIL: {}'.format(fn)
                         print("using notebook version:", self.max_time, msg)
                         print("if you change", fn, "save the notebook before retesting")
 

@@ -53,7 +53,12 @@ if __name__ == '__main__':
 
     def test_is_ready_to_submit():
         tester = Tools.TestFramework(NOTEBOOK_ID, client)
-        tuple = tester.test_raw_notebook()
+        tuple = tester.is_notebook_valid_python()
+        print(tuple)
+
+    def test_is_ready_to_download():
+        tester = Tools.TestFramework(NOTEBOOK_ID, client)
+        tuple = tester.clean_notebook_for_download()
         print(tuple)
 
     def test_grader():
@@ -89,8 +94,10 @@ if __name__ == '__main__':
 
     # these download notebook
     #test_grader()
-    test_grader_fn()
-    #test_is_ready_to_submit()
+    #test_grader_fn()
+
+    test_is_ready_to_submit()
+    #test_is_ready_to_download()
 
 
     #

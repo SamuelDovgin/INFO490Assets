@@ -6,14 +6,8 @@ sys.path.append('..')
 from utils import Parser
 from utils import Tools
 
-n_id ='1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'
-sys.path.append('..')
-#txt = Tools.install_gd_file(n_id, 'tmp.txt', force=True)
-txt = Tools.install_gd_file(n_id, 'tmp.txt', force=True, persist=True)
-
-parser = Parser.NBParser()
-txt = parser.parse_markdown(txt)
-open('what.txt', 'w').write(txt)
+import argparse
+import re
 
 def clean_markdown(txt):
     clean = []
@@ -31,9 +25,38 @@ def clean_markdown(txt):
             token = token.replace('\\', ' ')
             token = token.replace('#', '')
             token = token.replace('*', '')
+            'scrollTo=Y6FQ_T8fB2nx)'
+            p = r'scrollTo\s?=\s?[A-Za-z0-9_]+'
+            token = re.sub(p, ' ', token)
+
             tokens.append(token)
         clean.append(' '.join(tokens) + '\n')
     return '\n'.join(clean)
 
-print(clean_markdown(txt))
 
+tag_map = {
+    '00': '1GDCmobYye_kk28N35oK8i_BZdSSTyFsT'
+}
+parser = argparse.ArgumentParser(description='Test python')
+parser.add_argument('--tag', type=str, help='assignment tag', default='01', required=False)
+args = parser.parse_args()
+
+notebook_id = tag_map.get(args.tag, None)
+if notebook_id is not None:
+   txt = Tools.install_gd_file(notebook_id, force=True)
+   parser = Parser.NBParser()
+   txt = parser.parse_markdown(txt)
+   clean = clean_markdown(txt)
+
+'''
+python spell_check.py -tag > spell.txt
+cat spell.txt | aspell list --encoding utf-8
+1. Do this first (so you can add words to the dictionaryl
+aspell check out.txt
+
+LIST of words
+cat spell.txt | aspell list --encoding utf-8 | uniq
+
+LIST words and options
+cat spell.txt | aspell pipe --encoding utf-8 | uniq | grep -v \* | grep -v '^$'
+'''

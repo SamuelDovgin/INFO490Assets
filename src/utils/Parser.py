@@ -1,6 +1,7 @@
 
 import json
 
+from utils.SimpleLogger import logger
 
 class ParseValues(object):
     def __init__(self, code, user, timestamp):
@@ -8,6 +9,21 @@ class ParseValues(object):
         self.user = user
         self.timestamp = timestamp
 
+def illegal_code(line):
+
+    bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
+
+    clean = line.lstrip()
+    if len(clean) > 0 and clean[0] in ['!', '%']:
+        return True
+
+    remove_me = False
+    for b in bad_news:
+        if clean.find(b) >= 0:
+            remove_me = True
+            break
+
+    return remove_me
 
 class NBParser(object):
 
@@ -19,7 +35,7 @@ class NBParser(object):
         code = json.loads(text)
 
         if as_is is True and remove_magic_cells is True:
-            print("warning, is_is flag takes priority")
+            logger.log("warning, is_is flag takes priority")
 
         # creation timestamp
         metadata = code['metadata']
@@ -47,19 +63,18 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
-                        clean = line.lstrip()
-                        t1 = clean.find('import IPython') >= 0 or clean.find('from IPython') >= 0
-                        t2 = len(clean) > 0 and clean[0] in ['!', '%']
-                        if t1 or t2:
+                        if illegal_code(line):
                             if remove_magic_cells:
                                 cell_code = []
                                 break
                             else:
                                 line = 'pass #' + line
+                        else:
+                            # we will use the original line as is
+                            pass
 
                     if len(line) > 0:
-                        clean = line.rstrip()
-                        cell_code.append(clean)
+                        cell_code.append(line.rstrip())
 
                 lines.extend(cell_code)
 

@@ -1,0 +1,129 @@
+<img src="https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/assets/images/introduction/album-border.png" align="left" style="width:25"/>
+
+Welcome to Data, Machines, and the 🐍
+
+This is the sequeal to  INFO 490 (https://example.com) (Introduction to Programming for Data Science). Our focus will be on text analysis, machine learning, and of course advancing your Python knowledge. We have a lot of information to share and we hope you will enjoy learning how to move data though machines built using Python.
+
+Each lesson requires careful reading and understanding.
+
+Use Piazza to ask for help. You should tag your questions with Lesson:Section
+
+This is the first lesson and its focus is on making sure you knoq how to set up the programming and testing environment properly.
+
+ Introduction to Notebooks
+
+For those of you who have not taken INFO490 and haven't coded inside a notebook the following are good resources:
+
+ https://colab.research.google.com/notebooks/basic_features_overview.ipynb
+
+ https://colab.research.google.com/notebooks/intro.ipynb
+
+TLDR: it boils down to code and text cells. Code cells, you run; Text cells you read; If you get disconnected, you need to re-run all the code cells. Google does a good job with auto-save (saved on your google drive). But you should save it via the File menu before taking a break.
+
+<a id="install"></a>
+
+Notebook Preparation for Lessons
+
+Each lesson will start with a template (given in the course schedule). Once you open the notebook, the first thing you need to do is save in on your google drive. You can orgainize your drive and folders however it works best for you.
+
+Step 1: after making a copy of the original notebook
+
+ Change the name to the name of the lesson (e.g. Welcome)
+
+ Make sure this notebook readable by selecting Share (this allows for testing)
+
+! alt text (https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/assets/images/share.png)
+
+Copy the document ID from the share URL into the variable `NOTEBOOK_ID` in the next cell (and run that cell)
+
+Step 2: install the INFO490 git repository (run the next cell)
+
+ <img src="https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/assets/images/introduction/sidebar.png" align="left"/>
+
+You can confirm that the class repository has been mounted <br/>
+
+by looking at the left side and selecting the   color{red}{ text{Files}}  icon.
+
+The same sidebar menu can show you the table of contents
+
+of each lesson as well.
+
+Step 3: install testing framework (after you run the cell, it should say: Hello! )
+
+> If you see an exception, it's most likely that you didn't make the notebook readable
+
+A few notes on testing:
+
+ You will need to re-run steps 1, 2, 3 if you need to re-connect
+
+ When you change your code, the notebook is not immediately saved.
+
+ You can use the File Menu (File->Save) to force the notebook to save if the auto-save hasn't run since your latest code change
+
+ The testing framework reads the version saved on your google drive. Each test prints the timestamp of the last save.
+
+ Coding and Testing 🐍
+
+> Now for the fun. You can (not required to) use the `tester` object created above to test individual functions, the notebook, and see if it's ready to be uploaded to the official grader.
+
+Let's say the first function you need to implement is named `simple_add`. You can fill out the function. Once that is done, you can write your own tests (recommended) but also use a simple grader. Go ahead and finish the following function:
+
+Now test it using either `test_with_button` or `test_function`.
+
+Note: `test_with_button` works well if you need to re-load your notebook (it will be much faster).
+
+<a id="prepare"></a>
+
+ Preparation for Submitting a Notebook for Grading
+
+A few important notes about Notebooks (both Jupyter and Colab.research). Remember this notebook needs to run in a Python enviornment (for grading). Take the following precautions before submitting it:
+
+ Comment out any magic commands (those that start with % or %%):
+
+Wrap any `!` magic commands in a function so it can easily be commented out:
+
+Wrap any code that uses an iPython specific library or any library that is not installed on the grader in a function so it can easily be commented out:
+
+In General,
+
+ Since you will start with a notebook template and always be working with functions, the ONLY cell you will need to comment out is the one where the git repository is installed. Even the cell with `install_testing_framework` can be left alone.
+
+ All text cells are ignored. So there's no need to worry about the text for cells or formulas causing an issue.
+
+ One of the goals of this class is to teach good programming practices even though we are in an enviornment that discourages it. So you will always be creating functions and classes to contain your code.
+
+ Before you go, you should know
+
+ how to copy the lesson notebook to your google drive
+
+ how to install the INFO490 github repository
+
+ how to install the testing framework
+
+ how to make sure your notebook is Python ready (able to run outside of a notebook environment)
+
+ how to save the notebook as Python and upload it to Gradescope
+
+ Submit this for grading
+
+You are done. Prepare this notebook for grading by doing the following steps:
+
+1. Finish the `simple_add` function and prep the notebook (see  Preparation for Submitting a Notebook for Grading (scrollTo=Y6FQ_T8fB2nx))
+
+<!--  Preparation for Submitting a Notebook for Grading (prepare) -->
+
+2. Optional, test the notebook (see next code cell)
+
+3. Submit this notebook on gradescope
+
+ download the notebook (File->Download .py)
+
+ save the file as solution.py
+
+ upload that file (solution.py) to gradescope
+
+You must use your official school email on gradescope.
+
+version: 03.20.2020
+
+Do not distribute this notebook outside of the class
