@@ -168,7 +168,7 @@ class TestFramework(object):
             output = widgets.Output()
 
             def on_button_clicked(input):
-                score, max_score, msg = self.test_function(TestFramework.STUDENT_FILE, fn)
+                score, max_score, msg = self.test_function(fn)
 
                 # Display the message within the output widget.
                 with output:
