@@ -20,6 +20,7 @@ from datetime import datetime
 import time
 
 from utils.SimpleLogger import logger
+from utils.Parser import NBParser
 
 '''
 #
@@ -47,8 +48,9 @@ tester = install_testing_framework(NOTEBOOK_ID, LESSON_ID)
 tester.hello_world()
 '''
 
-def install_gd_file(doc_id, filename, force=False, persist=True):
+def install_gd_file(doc_id, filename, force=False, persist=False):
 
+    import os
     #import importlib
     if not force and os.path.exists(filename):
         logger.log("reading cached version")
@@ -96,6 +98,8 @@ class TestFramework(object):
         client.user = user
         self.max_time = ts
 
+        self.parser = NBParser()
+
     def write_file(self, fn=STUDENT_FILE):
 
         # download the notebook (it's a json file) if it's readable
@@ -103,53 +107,18 @@ class TestFramework(object):
         if text is None or not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-        py_code, user, ts = self.parse(text)
-        #{"timestamp": 1583470815612}
+        py_code, user, ts = self.parser.parse(text, remove_magic_cells=False)
+        # {"timestamp": 1583470815612}
 
         # if you encounter a "year is out of range" error the timestamp
         # may be in milliseconds, try `ts /= 1000` in that case
         tsf = ts/1000.0
         logger.log("using ", ts, datetime.fromtimestamp(tsf).strftime('%Y-%m-%d %H:%M:%S'))
-        #logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
+        # logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
         with open(fn, 'w') as fd:
             fd.write(py_code)
 
         return user, ts
-
-    def parse(self, text):
-
-        code = json.loads(text)
-
-        # creation timestamp
-        metadata = code['metadata']
-        colab = metadata.get('colab', {})
-        items = colab.get('provenance', [])
-        timestamp = 0
-        if len(items) > 0:
-            timestamp = items[0].get('timestamp', 0)
-
-        lines = []
-        user = None
-        max_time = timestamp
-        for cell in code['cells']:
-            if cell['cell_type'] == 'code':
-                meta = cell.get('metadata', {})
-                info = meta.get('executionInfo', {})
-                ts = int(info.get('timestamp', 0))
-                if ts > max_time:
-                    max_time = ts
-                user_info = info.get('user', None)
-                if user is not None and user_info is not None:
-                    user = {'name': user['displayName'], 'id': user['userId']}
-
-                for line in cell['source']:
-                    if len(line) > 0 and line[0] not in ['!', '%']:
-                        clean = line.rstrip()
-                        lines.append(clean)
-            elif cell['cell_type'] == 'markdown':
-                pass
-
-        return '\n'.join(lines), user, max_time
 
     #
     # PUBLIC API
