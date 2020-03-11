@@ -29,17 +29,19 @@ from utils.Parser import NBParser
 #
 def install_testing_framework(notebook_id, lesson_id):
     import sys
-    sys.path.append('info490/src/utils')
+    sys.path.append('info490/src')
     class Nop(object):
         def __init__(self, e): self.e = e
-        def nop(self, *args, **kw): return("unable to test:", self.e)
+        # NOTE this returns two Values
+        def nop(self, *args, **kw): return("unable to test:" + self.e, None)
         def __getattr__(self, _): return self.nop
     try:
-        from Tools import TestFramework, Client
-        #import importlib
-        #importlib.reload(Tools)
-        #importlib.reload(Client)
-        return TestFramework(notebook_id, Client.ClientTest(lesson_id))
+        from utils import Tools,Client,Parser
+        import importlib
+        importlib.reload(Parser)
+        importlib.reload(Tools)
+        importlib.reload(Client)
+        return Tools.TestFramework(notebook_id, Client.ClientTest(lesson_id))
     except ImportError as e:
         # happens on the test side, or if code never mounted
         return Nop(str(e))
@@ -143,6 +145,9 @@ class TestFramework(object):
     def test_notebook(self):
         u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         e, r = self.client.test_file(TestFramework.STUDENT_FILE)
+        #
+        # TODO: make result user friendly for display
+        #
         return e, r
 
     def test_function(self, fn):
@@ -153,8 +158,8 @@ class TestFramework(object):
             fn = fn.__name__
 
         u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
-        score, max_score, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
-        return score, max_score, msg
+        error, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+        return error, msg
 
     def test_with_button(self, fn):
 
@@ -172,24 +177,40 @@ class TestFramework(object):
             output = widgets.Output()
 
             def on_button_clicked(input):
-                score, max_score, msg = self.test_function(fn)
+                error, msg = self.test_function(fn)
+                score, max_score, msg = msg.split(':')
 
+                score = int(score)
+                max_score = int(max_score)
+
+                # print("Button clicked.", fn, input)
                 # Display the message within the output widget.
                 with output:
 
                     clear_output()  # also removes the button if put before output
-                    # print("Button clicked.", fn, input)
-                    if score is None:
-                        button.style = widgets.ButtonStyle(button_color='yellow')
-                        print(msg)
-                        button.description = 'No Tests'
-                    elif score == max_score:
-                        button.style = widgets.ButtonStyle(button_color='green')
-                        button.description = 'Pass!'
+                    print_warning = True
+                    if error is None:
+                        if msg.find('no tests') >= 0:
+                            button.style = widgets.ButtonStyle(button_color='yellow')
+                            button.description = 'No Tests'
+                        elif score > 0 and score == max_score:
+                            button.style = widgets.ButtonStyle(button_color='green')
+                            button.description = 'Pass!'
+                            print_warning = False
+                        elif score > 0:
+                            button.style = widgets.ButtonStyle(button_color='yellow')
+                            button.description = 'More Work'
+                        else:
+                            button.style = widgets.ButtonStyle(button_color='red')
+                            button.description = 'Fail'
                     else:
                         button.style = widgets.ButtonStyle(button_color='red')
-                        #button.description = 'FAIL: {}/{}'.format(score, max_score)
                         button.description = 'FAIL: {}'.format(fn)
+                        print(error)
+                        msg = ''
+
+                    if print_warning:
+                        print(msg)
                         print("using notebook version:", self.max_time, msg)
                         print("if you change", fn, "save the notebook before retesting")
 
@@ -203,7 +224,7 @@ class TestFramework(object):
             display(button, output)
 
         except ImportError as e:
-            return 'unable to test with gui: ' + str(e)
+            return 'unable to test with gui: ', str(e)
 
 
 #
