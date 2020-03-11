@@ -93,10 +93,10 @@ if __name__ == '__main__':
 
 
     # these download notebook
-    #test_grader()
+    test_grader()
     #test_grader_fn()
 
-    test_is_ready_to_submit()
+    #test_is_ready_to_submit()
     #test_is_ready_to_download()
 
 

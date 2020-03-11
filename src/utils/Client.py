@@ -93,6 +93,9 @@ class ClientTest(object):
         self.user = None
         self.is_backend = backend
 
+    #
+    # all tests must return TWO values (so NoOp will always work)
+    #
     def test_file(self, filename, fn_name=None):
 
         logger.log("test", filename, self.lesson_id, fn_name)
@@ -108,24 +111,7 @@ class ClientTest(object):
 
             if result['score'] != 100:
                 # this gives some info back
-                #print(result)
                 logger.log(json.dumps(result))
-
-                ''' 
-                could loop through all the tests
-                looking at 'output' filed
-                and make sense of the error
-                import re
-                p = r'File *solution.py'
-                m = re.search(p, payload['stdout'])
-                print("SEARCH", payload['stdout'])
-                if m is not None:
-                    print(m)
-                else:
-                   print(error)
-                   print(payload)
-                '''
-
             return None, result
         else:
             return error, None
@@ -135,9 +121,8 @@ class ClientTest(object):
         if error is None:
             for t in result['tests']:
                 if t['name'] == fn_name:
-                    return t['score'], t['max_score'], t['output'].strip()
-            #print(result)
-            return None, None, "no tests for " + fn_name
+                    return None, "{}:{}:{}".format(t['score'], t['max_score'], t['output'].strip())
+            return None, "0:0:no tests for " + fn_name
         else:
-            return None, None, error
+            return error, "0:0:NA"
 
