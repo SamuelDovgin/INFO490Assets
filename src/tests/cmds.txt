@@ -2,15 +2,3 @@
   python -mjson.tool solution.json  > b.json
   diff a.json b.json
 
-python spell_check.py -id <notebook_id  > out.txt
-cat out.txt | aspell list --encoding utf-8
-
-aspell check out.txt
-
-
-LIST of words
-cat out.txt | aspell list --encoding utf-8 | uniq
-
-
-LIST words and options
-cat out.txt | aspell pipe --encoding utf-8 | uniq | grep -v \* | grep -v '^$'
