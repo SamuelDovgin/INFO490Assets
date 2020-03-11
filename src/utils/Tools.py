@@ -99,14 +99,14 @@ class TestFramework(object):
         client.user = user
         self.max_time = ts
 
-    def write_file(self, fn=STUDENT_FILE, as_is=False):
+    def write_file(self, fn=STUDENT_FILE, as_is=False, remove_magic_cells=True):
 
         # download the notebook (it's a json file) if it's readable
         text = install_gd_file(self.notebook_id, TestFramework.JSON_FILE, force=True, persist=True)
         if text is None or not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-        py_code, user, ts = self.parser.parse_code(text, as_is=as_is)
+        py_code, user, ts = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
         # {"timestamp": 1583470815612}
 
         # if you encounter a "year is out of range" error the timestamp
@@ -137,7 +137,7 @@ class TestFramework(object):
         return result
 
     def test_notebook(self):
-        u, ts = self.write_file(TestFramework.STUDENT_FILE)
+        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         result = self.client.test_file(TestFramework.STUDENT_FILE)
         return result
 
@@ -148,7 +148,7 @@ class TestFramework(object):
         if callable(fn):
             fn = fn.__name__
 
-        u, ts = self.write_file(TestFramework.STUDENT_FILE)
+        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         score, max_score, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
         return score, max_score, msg
 

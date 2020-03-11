@@ -36,6 +36,7 @@ if __name__ == '__main__':
     import json
 
     NOTEBOOK_ID = '1ymVhzIS-TCKhOx28jWEQ3E2IxWscGwwA'  # change me!!
+    NOTEBOOK_ID = '1GDCmobYye_kk28N35oK8i_BZdSSTyFsT'
     LESSON_ID = 'LinearAlgebra:1:1'  # keep this
     LESSON_ID = '00'  # keep this
 
@@ -88,8 +89,8 @@ if __name__ == '__main__':
 
     # these download notebook
     #test_grader()
-    #test_grader_fn()
-    test_is_ready_to_submit()
+    test_grader_fn()
+    #test_is_ready_to_submit()
 
 
     #

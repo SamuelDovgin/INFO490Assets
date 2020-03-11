@@ -47,10 +47,11 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
-                        first_char = line.lstrip()
-                        if len(first_char) > 0 and first_char[0] in ['!', '%']:
+                        clean = line.lstrip()
+                        t1 = clean.find('import IPython') >= 0 or clean.find('from IPython') >= 0
+                        t2 = len(clean) > 0 and clean[0] in ['!', '%']
+                        if t1 or t2:
                             if remove_magic_cells:
-                                # abandon ship on the entire cell
                                 cell_code = []
                                 break
                             else:
