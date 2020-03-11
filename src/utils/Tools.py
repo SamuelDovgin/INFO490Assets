@@ -159,6 +159,7 @@ class TestFramework(object):
 
         u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         error, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
+        #score, max_score, msg = msg.split(':', maxsplit=2)
         return error, msg
 
     def test_with_button(self, fn):
@@ -178,7 +179,7 @@ class TestFramework(object):
 
             def on_button_clicked(input):
                 error, msg = self.test_function(fn)
-                score, max_score, msg = msg.split(':')
+                score, max_score, msg = msg.split(':', maxsplit=2)
 
                 score = int(score)
                 max_score = int(max_score)
