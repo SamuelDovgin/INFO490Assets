@@ -12,8 +12,7 @@ sys.path.append('..')
 txt = Tools.install_gd_file(n_id, 'tmp.txt', force=True, persist=True)
 
 parser = Parser.NBParser()
-txt = parser.parse(txt, markdown=True)
-
+txt = parser.parse_markdown(txt)
 open('what.txt', 'w').write(txt)
 
 def clean_markdown(txt):
@@ -38,5 +37,3 @@ def clean_markdown(txt):
 
 print(clean_markdown(txt))
 
-#  python spell_check.py  > out2.txt
-#   604  aspell check out2.txt

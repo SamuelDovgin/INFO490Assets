@@ -92,22 +92,21 @@ class TestFramework(object):
         self.notebook_id = notebook_id
         self.client = client
         self.max_time = 0
+        self.parser = NBParser()
 
         # test if user enabled reading notebook
         user, ts = self.write_file(TestFramework.STUDENT_FILE)
         client.user = user
         self.max_time = ts
 
-        self.parser = NBParser()
-
-    def write_file(self, fn=STUDENT_FILE):
+    def write_file(self, fn=STUDENT_FILE, as_is=False):
 
         # download the notebook (it's a json file) if it's readable
         text = install_gd_file(self.notebook_id, TestFramework.JSON_FILE, force=True, persist=True)
         if text is None or not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-        py_code, user, ts = self.parser.parse(text, remove_magic_cells=False)
+        py_code, user, ts = self.parser.parse_code(text, as_is=as_is)
         # {"timestamp": 1583470815612}
 
         # if you encounter a "year is out of range" error the timestamp
@@ -131,6 +130,11 @@ class TestFramework(object):
             print("Hello! (backend)", self.max_time, tf)
         else:
             print("Hello!", self.max_time, tf)
+
+    def test_raw_notebook(self):
+        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=True)
+        result = self.client.test_file(TestFramework.STUDENT_FILE)
+        return result
 
     def test_notebook(self):
         u, ts = self.write_file(TestFramework.STUDENT_FILE)

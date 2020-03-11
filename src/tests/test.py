@@ -19,7 +19,7 @@ import sys
 sys.path.append('..')
 
 from utils import Client
-from utils import Tools
+from utils import Tools, Parser
 
 def css_styling(snip):
     from IPython.core.display import HTML
@@ -50,6 +50,11 @@ if __name__ == '__main__':
         tuple = tester.test_function('simple_add')
         print(tuple)
 
+    def test_is_ready_to_submit():
+        tester = Tools.TestFramework(NOTEBOOK_ID, client)
+        tuple = tester.test_raw_notebook()
+        print(tuple)
+
     def test_grader():
         tester = Tools.TestFramework(NOTEBOOK_ID, client)
         tester.hello_world()
@@ -70,19 +75,22 @@ if __name__ == '__main__':
 
     def test_parser(fn, outfn):
         txt = open(fn).read()
-        py_code,user,ts = tester.parse(txt)
+        parser = Parser.NBParser()
+        py_code,user,ts = parser.parse(txt)
         print(user, ts)
         with open(outfn, 'w') as fd:
             fd.write(py_code)
 
     # test a local file (MUST be named solution.py as the tests import this)
-    debug_test('solution.py', 'simple_add')
+    #debug_test('solution.py', 'simple_add')
     #test_parser('test.json', outfn='wow.py')
 
 
     # these download notebook
     #test_grader()
     #test_grader_fn()
+    test_is_ready_to_submit()
+
 
     #
     # note this downloads the file (solution.py and solution.json)
