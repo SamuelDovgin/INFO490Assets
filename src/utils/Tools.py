@@ -212,8 +212,8 @@ class TestFramework(object):
 
                     if print_warning:
                         print(msg)
-                        print("using notebook version:", self.max_time, msg)
-                        print("if you change", fn, "save the notebook before retesting")
+                        print("Using notebook version:", self.max_time)
+                        print("If you change", fn, "save the notebook before retesting")
 
                     # since the button text changes
                     # disabling the button, makes sense
