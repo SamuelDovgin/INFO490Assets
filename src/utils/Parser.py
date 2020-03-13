@@ -30,6 +30,12 @@ class NBParser(object):
     def __init__(self):
         pass
 
+    def get_last_exectime(self, filename):
+        with open(filename, 'r') as fd:
+            text = fd.read()
+            code, min_time, max_time, u = self.parse_code(text)
+            return max_time
+
     def parse_code(self, text, as_is=False, remove_magic_cells=True):
 
         code = json.loads(text)
