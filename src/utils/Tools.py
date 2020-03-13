@@ -110,7 +110,7 @@ class TestFramework(object):
         if text is None or not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-        py_code, user, min_ts, max_ts = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
+        py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
         with open(fn, 'w') as fd:
             fd.write(py_code)
 
