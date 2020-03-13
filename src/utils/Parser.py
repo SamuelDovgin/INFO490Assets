@@ -42,13 +42,13 @@ class NBParser(object):
         colab = metadata.get('colab', {})
         items = colab.get('provenance', [])
 
-        born_timestamp = 0
+        min_time = 0
         if len(items) > 0:
-            born_timestamp = items[0].get('timestamp', 0)
+            min_time = int(items[0].get('timestamp', 0))
 
         lines = []
         user = None
-        max_time = born_timestamp
+        max_time = min_time
         for cell in code['cells']:
 
             cell_code = []
@@ -56,11 +56,15 @@ class NBParser(object):
                 meta = cell.get('metadata', {})
                 info = meta.get('executionInfo', {})
                 ts = int(info.get('timestamp', 0))
+
+                if min_time == 0:
+                    min_time = ts
                 if ts > max_time:
                     max_time = ts
+
                 user_info = info.get('user', None)
-                if user is not None and user_info is not None:
-                    user = {'name': user['displayName'], 'id': user['userId']}
+                if user is None and user_info is not None:
+                    user = {'name': user_info['displayName'], 'id': user_info['userId']}
 
                 for line in cell['source']:
                     if not as_is:
@@ -96,7 +100,7 @@ class NBParser(object):
                 # 1.  if the cell is all magic remove it
                 lines.extend(cell_code)
 
-        return '\n'.join(lines), user, born_timestamp, max_time
+        return '\n'.join(lines), min_time, max_time, user
 
     def parse_markdown(self, text):
 

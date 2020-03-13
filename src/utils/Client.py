@@ -9,15 +9,15 @@ import utils.ZipLib as ZipLib
 try:
     VERSION='03.12.2020'
     backend = False
-    SERVER = 'http://75.156.71.78:8080'
+    SERVER = 'http://75.156.71.78:8080'    # good for non-local client to test server
     SERVER = 'http://18.219.123.225:8080'  # AWS
     import ipywidgets as widgets
     from IPython.display import display
 except ImportError as e:
     backend = True
     SERVER = 'http://127.0.0.1:8080'
-    SERVER = 'http://192.168.1.78:8080'    # local
     SERVER = 'http://18.219.123.225:8080'  # AWS
+    SERVER = 'http://192.168.1.78:8080'    # local
 
 
 class MetaData(object):
@@ -32,17 +32,20 @@ class MetaData(object):
         self.max_time = 0
 
     def update(self, min_time, max_time, user=None):
-        self.min_time = min_time
-        self.max_time = max_time
-        self.user = user
+        if self.min_time == 0:
+            self.min_time = min_time
+        if self.max_time < max_time:
+            self.max_time = max_time
+        if self.user is None:
+            self.user = user
 
     def kv(self):
 
         result = {
             'lesson_id': self.lesson_id,
             'notebook_id': self.notebook_id,
-            'min_time': self.max_time,
-            'max_time': self.min_time,
+            'min_time': self.min_time,
+            'max_time': self.max_time,
         }
 
         if self.user is not None:
@@ -76,7 +79,6 @@ class ClientTest(object):
 
     def send_zip(self, zipfile, fn_name=None):
 
-        assn_tag = self.meta.lesson_id
         end_point = "{:s}/testzip".format(self.server)
 
         with open(zipfile, 'rb') as fd:
@@ -86,8 +88,12 @@ class ClientTest(object):
             # add in the meta data (notebook, assignment, etc)
             kv = self.meta.kv()
             for k in kv:
-                post_data[k] = kv[k]
+                v = kv[k]
+                if isinstance(v, dict):
+                    v = json.dumps(kv[k])
+                post_data[k] = v
 
+            print('posting', post_data)
             response = requests.post(end_point, data=post_data,
                                      files={"archive": (zipfile, fd)})
 
