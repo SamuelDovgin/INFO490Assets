@@ -76,6 +76,17 @@ class NBParser(object):
                     if len(line) > 0:
                         cell_code.append(line.rstrip())
 
+                # option:  if a cell is mixed with magic and python
+                '''
+                !ls -la
+                %% HTML 
+                def partial():
+                   for r in words:
+                      w = r.lower()
+                '''
+
+                # 1.  if the cell is all magic remove it
+                # 1.  if the cell is all magic remove it
                 lines.extend(cell_code)
 
         return '\n'.join(lines), user, max_time
