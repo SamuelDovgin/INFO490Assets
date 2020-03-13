@@ -16,31 +16,31 @@ try:
 except ImportError as e:
     backend = True
     SERVER = 'http://127.0.0.1:8080'
-    SERVER = 'http://192.168.1.78:8080'
+    SERVER = 'http://192.168.1.78:8080'    # local
     SERVER = 'http://18.219.123.225:8080'  # AWS
 
 
 class MetaData(object):
 
-    def __init__(self, notebook_id, lesson_id):
+    def __init__(self, lesson_id, notebook_id):
 
-        self.notebook_id = notebook_id
         self.lesson_id = lesson_id
+        self.notebook_id = notebook_id
 
         self.user = None
         self.min_time = 0
         self.max_time = 0
 
-    def update(self, user, min_time, max_time):
-        self.user = user
+    def update(self, min_time, max_time, user=None):
         self.min_time = min_time
         self.max_time = max_time
+        self.user = user
 
     def kv(self):
 
         result = {
-            'notebook_id': self.notebook_id,
             'lesson_id': self.lesson_id,
+            'notebook_id': self.notebook_id,
             'min_time': self.max_time,
             'max_time': self.min_time,
         }
@@ -52,11 +52,12 @@ class MetaData(object):
 
 class ClientTest(object):
 
-    def __init__(self, meta=None, server=None):
+    def __init__(self, lesson_id, notebook_id=0, server=None):
 
-        assert meta is not None, "bad meta data"
-        assert meta.notebook_id is not None, "bad notebook id"
-        assert meta.lesson_id is not None, "bad lesson id"
+        assert lesson_id is not None, "bad lesson id"
+        assert notebook_id is not None, "bad notebook id"
+
+        meta = MetaData(lesson_id, notebook_id)
 
         if server is None:
             server = SERVER
@@ -66,7 +67,7 @@ class ClientTest(object):
         self.meta = meta
 
         logger.log("client version:", VERSION)
-        logger.log("running on server:", backend is True)
+        logger.log("running in notebook:", backend is False)
         logger.log("server:", server)
         logger.log("data:", meta.kv())
 
@@ -80,9 +81,9 @@ class ClientTest(object):
 
         with open(zipfile, 'rb') as fd:
             data = {'error_code': None, 'payload': {}}
-            post_data = {"assignment": assn_tag, "fn": fn_name}
+            post_data = {"fn": fn_name}
 
-            # add in the meta data
+            # add in the meta data (notebook, assignment, etc)
             kv = self.meta.kv()
             for k in kv:
                 post_data[k] = kv[k]
