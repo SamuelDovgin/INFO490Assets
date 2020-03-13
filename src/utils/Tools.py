@@ -30,7 +30,7 @@ from utils import Client, Parser
 # it's important that this fails on the test/server side
 # so Nop is used when the solution.py is run directly
 #
-def install_testing_framework(notebook_id, lesson_id):
+def install_testing_framework(lesson_id, notebook_id):
     import sys
     sys.path.append('info490/src')
     class Nop(object):
@@ -44,12 +44,12 @@ def install_testing_framework(notebook_id, lesson_id):
         importlib.reload(Parser)
         importlib.reload(Tools)
         importlib.reload(Client)
-        return Tools.TestFramework(notebook_id, Client.ClientTest(lesson_id))
+        return Tools.TestFramework(lesson_id, notebook_id)
     except ImportError as e:
         # happens on the test side, or if code never mounted
         return Nop(str(e))
 
-tester = install_testing_framework(NOTEBOOK_ID, LESSON_ID)
+tester = install_testing_framework(LESSON_ID, NOTEBOOK_ID)
 tester.hello_world()
 '''
 
@@ -89,15 +89,14 @@ class TestFramework(object):
     JSON_FILE    = 'solution.json'
     STUDENT_FILE = 'solution.py'
 
-    def __init__(self, notebook_id, lesson_id, server=None):
+    def __init__(self, lesson_id, notebook_id, client=None):
 
-        assert notebook_id is not None, "bad init"
-
-        meta = Client.MetaData(notebook_id, lesson_id)
+        if client is None:
+            client = Client.ClientTest(lesson_id, notebook_id)
 
         # both need to be done before write_file
+        self.client = client
         self.parser = Parser.NBParser()
-        self.client = Client.ClientTest(meta=meta, server=server)
 
         # test if user enabled world reading notebook
         self.write_file(TestFramework.STUDENT_FILE)
@@ -122,7 +121,7 @@ class TestFramework(object):
         logger.log("using ", max_ts, datetime.fromtimestamp(tsf).strftime('%Y-%m-%d %H:%M:%S'))
         # logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
 
-        self.client.get_meta().update(user, min_ts, max_ts)
+        self.client.get_meta().update(min_ts, max_ts, user)
 
     #
     # PUBLIC API
