@@ -16,6 +16,7 @@ import json
 
 import urllib.parse
 import urllib.request
+import requests
 from datetime import datetime
 import time
 
@@ -61,20 +62,43 @@ def install_gd_file(doc_id, force=True, filename=None):
         with open(filename, 'r') as fd:
            return fd.read()
 
+    #
+    # possible 403 if attempt is made too many times to download?
+    # seems to be temporary -- don't fire off too many requests
+    #
+    baseurl = "https://docs.google.com/uc"
     baseurl = "https://drive.google.com/uc"
-    params = {"export": "download", "id": doc_id}
+    #
+    # can help by switching the baseurl
+    #
 
+    params = {"export": "download", "id": doc_id}
     url = baseurl + "?" + urllib.parse.urlencode(params)
+
     try:
 
-        #resp = requests.head(url)
-        #print(resp.status_code, resp.text, resp.headers)
+        def v1():
+            logger.log('fetching google doc', url)
+            r = urllib.request.urlopen(url)
+            status = r.getcode()
+            if status != 200:
+                print("unable to download notebook")
+                print('status', r.status_code)
+                return None
+            return str(r.read().decode('UTF-8'))
 
-        r = urllib.request.urlopen(url)
-        #print('DATE', r.headers['last-modified'])
-        #print('DATE', r.headers)
+        def v2():
+            #r = requests.get(baseurl, params)
+            logger.log('fetching google doc', url)
+            r = requests.get(url)
+            if r.status_code != 200:
+                print(r.headers)
+                print("unable to download notebook")
+                print('status', r.status_code)
+                return None
+            return r.text
 
-        text = str(r.read().decode('UTF-8'))
+        text = v2()
         if filename is not None:
             with open(filename, 'w') as fd:
                 fd.write(text)
@@ -100,6 +124,12 @@ class TestFramework(object):
 
         # test if user enabled world reading notebook
         self.write_file(TestFramework.STUDENT_FILE)
+
+    def last_exec(self):
+        import time
+        now = (time.time() * 1000)
+        max_time = self.parser.get_last_exectime(TestFramework.JSON_FILE)
+        print( (now - max_time)/1000 )
 
     def write_file(self, fn=STUDENT_FILE, as_is=False, remove_magic_cells=True):
 
@@ -128,13 +158,19 @@ class TestFramework(object):
     #
 
     def hello_world(self):
-        ts = self.client.get_meta().max_time
-        tf = ts/1000
-        tf = time.ctime(tf)
+        min_ts = self.client.get_meta().min_time
+        max_ts = self.client.get_meta().max_time
+        tf = min_ts/1000
+        min_tf = time.ctime(tf)
+        tf = max_ts/1000
+        max_tf = time.ctime(tf)
+        diff = int((max_ts - min_ts)/1000)
+
         if self.client.is_backend:
-            print("Hello! (backend)", ts, tf)
+            print("Hello! (backend)")
         else:
-            print("Hello!", ts, tf)
+            print("Hello!")
+        print("{:s}\n{:s} ({:d})".format(min_tf, max_tf, diff))
 
     def is_notebook_valid_python(self):
         self.write_file(TestFramework.STUDENT_FILE, as_is=True)
