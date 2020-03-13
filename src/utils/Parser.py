@@ -30,8 +30,8 @@ class NBParser(object):
     def __init__(self):
         pass
 
-
     def parse_code(self, text, as_is=False, remove_magic_cells=True):
+
         code = json.loads(text)
 
         if as_is is True and remove_magic_cells is True:
@@ -41,13 +41,14 @@ class NBParser(object):
         metadata = code['metadata']
         colab = metadata.get('colab', {})
         items = colab.get('provenance', [])
-        timestamp = 0
+
+        born_timestamp = 0
         if len(items) > 0:
-            timestamp = items[0].get('timestamp', 0)
+            born_timestamp = items[0].get('timestamp', 0)
 
         lines = []
         user = None
-        max_time = timestamp
+        max_time = born_timestamp
         for cell in code['cells']:
 
             cell_code = []
@@ -80,16 +81,22 @@ class NBParser(object):
                 '''
                 !ls -la
                 %% HTML 
-                def partial():
+                def build_object():
                    for r in words:
                       w = r.lower()
+                   return FancyClass()
+                helper = build_object()
+                
+                # we DO NOT what that entire cell 
+                # to be discarded
+                
                 '''
 
                 # 1.  if the cell is all magic remove it
                 # 1.  if the cell is all magic remove it
                 lines.extend(cell_code)
 
-        return '\n'.join(lines), user, max_time
+        return '\n'.join(lines), user, born_timestamp, max_time
 
     def parse_markdown(self, text):
 

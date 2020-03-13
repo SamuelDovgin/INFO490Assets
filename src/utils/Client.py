@@ -1,12 +1,13 @@
 
-import requests
-from zipfile import ZipFile
-
-import sys
-import os
 import json
+import requests
+
+
+from utils.SimpleLogger import logger
+import utils.ZipLib as ZipLib
 
 try:
+    VERSION='03.12.2020'
     backend = False
     SERVER = 'http://75.156.71.78:8080'
     SERVER = 'http://18.219.123.225:8080'  # AWS
@@ -19,91 +20,91 @@ except ImportError as e:
     SERVER = 'http://18.219.123.225:8080'  # AWS
 
 
-from utils.SimpleLogger import logger
+class MetaData(object):
 
+    def __init__(self, notebook_id, lesson_id):
 
-def valid_file(fn):
+        self.notebook_id = notebook_id
+        self.lesson_id = lesson_id
 
-    blacklist = [".zip", ".pyc", "client.py"]
-    for b in blacklist:
-        if fn.endswith(b):
-            return False
-    return True
+        self.user = None
+        self.min_time = 0
+        self.max_time = 0
 
+    def update(self, user, min_time, max_time):
+        self.user = user
+        self.min_time = min_time
+        self.max_time = max_time
 
-def create_zipfile(dir_or_file):
+    def kv(self):
 
-    # python client.py assn1/
-    if os.path.isdir(dir_or_file) and dir_or_file != '.':
-        os.chdir(dir_or_file)
-        dir_or_file = '.'
+        result = {
+            'notebook_id': self.notebook_id,
+            'lesson_id': self.lesson_id,
+            'min_time': self.max_time,
+            'max_time': self.min_time,
+        }
 
-    # python client.py assn1/solution.py
-    parts = os.path.split(dir_or_file)
-    if len(parts) == 2 and os.path.isfile(dir_or_file):
-        if len(parts[0]) > 0:
-            os.chdir(parts[0])
-        dir_or_file = parts[1]
-
-
-    output = 'test.zip'  # server assumes this
-    with ZipFile(output, 'w') as zipObj:
-        # Iterate over all the files in directory
-        if os.path.isdir(dir_or_file):
-            for folderName, subfolders, filenames in os.walk(dir_or_file):
-                for filename in filenames:
-                    if valid_file(filename):
-                        # create complete filepath of file in directory
-                        fq_path = os.path.join(folderName, filename)
-                        # Add file to zip
-                        logger.log("adding", fq_path)
-                        zipObj.write(fq_path)
-        else:
-            logger.log("adding", dir_or_file)
-            zipObj.write(dir_or_file)
-
-        return output
-
-
-def send_zip(server, filename, assn_tag, fn_name=None):
-
-    end_point = "{:s}/testzip".format(server)
-
-    with open(filename, 'rb') as fd:
-        data = {'error_code': None, 'payload': {}}
-        post_data = {"assignment": assn_tag, "fn": fn_name}
-        response = requests.post(end_point, data=post_data,
-                                            files={"archive": (filename, fd)})
-
-        if response.status_code == 200:
-            data = response.json()  # json.loads(r.text)
-        else:
-            data['error_code'] = response.status_code
-
-        return data
+        if self.user is not None:
+            result['user'] = self.user
+        return result
 
 
 class ClientTest(object):
 
-    def __init__(self, lesson_id, server=SERVER):
+    def __init__(self, meta=None, server=None):
 
-        assert lesson_id is not None, "bad init"
-        logger.log("server at", server)
+        assert meta is not None, "bad meta data"
+        assert meta.notebook_id is not None, "bad notebook id"
+        assert meta.lesson_id is not None, "bad lesson id"
 
-        self.server = server
-        self.lesson_id = lesson_id
-        self.user = None
-        self.is_backend = backend
+        if server is None:
+            server = SERVER
 
+        self.server      = server
+        self.is_backend  = backend
+        self.meta = meta
+
+        logger.log("client version:", VERSION)
+        logger.log("running on server:", backend is True)
+        logger.log("server:", server)
+        logger.log("data:", meta.kv())
+
+    def get_meta(self):
+        return self.meta
+
+    def send_zip(self, zipfile, fn_name=None):
+
+        assn_tag = self.meta.lesson_id
+        end_point = "{:s}/testzip".format(self.server)
+
+        with open(zipfile, 'rb') as fd:
+            data = {'error_code': None, 'payload': {}}
+            post_data = {"assignment": assn_tag, "fn": fn_name}
+
+            # add in the meta data
+            kv = self.meta.kv()
+            for k in kv:
+                post_data[k] = kv[k]
+
+            response = requests.post(end_point, data=post_data,
+                                     files={"archive": (zipfile, fd)})
+
+            if response.status_code == 200:
+                data = response.json()  # json.loads(r.text)
+            else:
+                data['error_code'] = response.status_code
+
+            return data
     #
     # all tests must return TWO values (so NoOp will always work)
     #
     def test_file(self, filename, fn_name=None):
 
-        logger.log("test", filename, self.lesson_id, fn_name)
+        logger.log("test", filename, self.get_meta().lesson_id, fn_name)
 
-        zip_file = create_zipfile(filename)
-        response = send_zip(self.server, zip_file, self.lesson_id, fn_name)
+        zip_file = ZipLib.create_zipfile(filename)
+        response = self.send_zip(zip_file, fn_name)
         logger.log(response)
 
         error = response['error_code']
