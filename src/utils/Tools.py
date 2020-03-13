@@ -13,14 +13,17 @@ print(dir(tester))
 
 import sys
 import json
+
 import urllib.parse
 import urllib.request
-import requests
 from datetime import datetime
 import time
 
 from utils.SimpleLogger import logger
-from utils.Parser import NBParser
+from utils import Client, Parser
+
+
+
 
 '''
 #
@@ -86,64 +89,66 @@ class TestFramework(object):
     JSON_FILE    = 'solution.json'
     STUDENT_FILE = 'solution.py'
 
-    def __init__(self, notebook_id, client):
+    def __init__(self, notebook_id, lesson_id, server=None):
 
         assert notebook_id is not None, "bad init"
 
-        self.notebook_id = notebook_id
-        self.client = client
-        self.max_time = 0
-        self.parser = NBParser()
+        meta = Client.MetaData(notebook_id, lesson_id)
 
-        # test if user enabled reading notebook
-        user, ts = self.write_file(TestFramework.STUDENT_FILE)
-        client.user = user
-        self.max_time = ts
+        # both need to be done before write_file
+        self.parser = Parser.NBParser()
+        self.client = Client.ClientTest(meta=meta, server=server)
+
+        # test if user enabled world reading notebook
+        self.write_file(TestFramework.STUDENT_FILE)
 
     def write_file(self, fn=STUDENT_FILE, as_is=False, remove_magic_cells=True):
 
         # download the notebook (it's a json file) if it's readable
-        text = install_gd_file(self.notebook_id, force=True, filename=TestFramework.JSON_FILE)
+        nb_id = self.client.get_meta().notebook_id
+
+        text = install_gd_file(nb_id, force=True, filename=TestFramework.JSON_FILE)
         if text is None or not text.find('{"nbformat') == 0:
             raise Exception("Make notebook viewable")
 
-        py_code, user, ts = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
-        # {"timestamp": 1583470815612}
-
-        # if you encounter a "year is out of range" error the timestamp
-        # may be in milliseconds, try `ts /= 1000` in that case
-        tsf = ts/1000.0
-        logger.log("using ", ts, datetime.fromtimestamp(tsf).strftime('%Y-%m-%d %H:%M:%S'))
-        # logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
+        py_code, user, min_ts, max_ts = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
         with open(fn, 'w') as fd:
             fd.write(py_code)
 
-        return user, ts
+        # {"timestamp": 1583470815612}
+        # if you encounter a "year is out of range" error the timestamp
+        # may be in milliseconds, try `ts /= 1000` in that case
+        tsf = max_ts/1000.0
+        logger.log("using ", max_ts, datetime.fromtimestamp(tsf).strftime('%Y-%m-%d %H:%M:%S'))
+        # logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
+
+        self.client.get_meta().update(user, min_ts, max_ts)
 
     #
     # PUBLIC API
     #
 
     def hello_world(self):
-        tf = self.max_time/1000
+        ts = self.client.get_meta().max_time
+        tf = ts/1000
         tf = time.ctime(tf)
         if self.client.is_backend:
-            print("Hello! (backend)", self.max_time, tf)
+            print("Hello! (backend)", ts, tf)
         else:
-            print("Hello!", self.max_time, tf)
+            print("Hello!", ts, tf)
 
     def is_notebook_valid_python(self):
-        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=True)
+        self.write_file(TestFramework.STUDENT_FILE, as_is=True)
         e, r = self.client.test_file(TestFramework.STUDENT_FILE)
         return e is None, e
 
     def clean_notebook_for_download(self):
-        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
+        self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         e, r = self.client.test_file(TestFramework.STUDENT_FILE)
         return e is None, e
 
     def test_notebook(self):
-        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
+        self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         e, r = self.client.test_file(TestFramework.STUDENT_FILE)
         #
         # TODO: make result user friendly for display
@@ -157,7 +162,7 @@ class TestFramework(object):
         if callable(fn):
             fn = fn.__name__
 
-        u, ts = self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
+        self.write_file(TestFramework.STUDENT_FILE, as_is=False, remove_magic_cells=True)
         error, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
         #score, max_score, msg = msg.split(':', maxsplit=2)
         return error, msg
