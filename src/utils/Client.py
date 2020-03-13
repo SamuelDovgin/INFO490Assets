@@ -9,12 +9,14 @@ import json
 try:
     backend = False
     SERVER = 'http://75.156.71.78:8080'
+    SERVER = 'http://18.219.123.225:8080'  # AWS
     import ipywidgets as widgets
     from IPython.display import display
 except ImportError as e:
     backend = True
     SERVER = 'http://127.0.0.1:8080'
     SERVER = 'http://192.168.1.78:8080'
+    SERVER = 'http://18.219.123.225:8080'  # AWS
 
 
 from utils.SimpleLogger import logger
