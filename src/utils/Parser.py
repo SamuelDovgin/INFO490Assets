@@ -65,8 +65,11 @@ class NBParser(object):
             if cell['cell_type'] == 'code':
                 meta = cell.get('metadata', {})
                 info = meta.get('executionInfo', {})
+
                 ts = int(info.get('timestamp', 0))
-                ts = ts/1000
+                tz = int(info.get('user_tz', 0))  # minutes off UTC
+                milli = (tz * 60) * 1000
+                ts = (ts - milli)/1000.0
 
                 if ts != 0 and (ts < min_time or min_time == 0):
                     min_time = ts
