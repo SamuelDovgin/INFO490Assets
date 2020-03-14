@@ -2,6 +2,7 @@
 import json
 
 from utils.SimpleLogger import logger
+from datetime import datetime
 
 class ParseValues(object):
     def __init__(self, code, user, timestamp):
@@ -25,16 +26,17 @@ def illegal_code(line):
 
     return remove_me
 
+
 class NBParser(object):
 
     def __init__(self):
         pass
 
-    def get_last_exectime(self, filename):
+    def get_times(self, filename):
         with open(filename, 'r') as fd:
             text = fd.read()
             code, min_time, max_time, u = self.parse_code(text)
-            return max_time
+            return min_time, max_time
 
     def parse_code(self, text, as_is=False, remove_magic_cells=True):
 
@@ -50,7 +52,9 @@ class NBParser(object):
 
         min_time = 0
         if len(items) > 0:
-            min_time = int(items[0].get('timestamp', 0))
+            pass
+            # use provenance time ??? hmmmmm
+            #min_time = int(items[0].get('timestamp', 0))
 
         lines = []
         user = None
@@ -62,11 +66,14 @@ class NBParser(object):
                 meta = cell.get('metadata', {})
                 info = meta.get('executionInfo', {})
                 ts = int(info.get('timestamp', 0))
+                ts = ts/1000
 
-                if min_time == 0:
+                if ts != 0 and (ts < min_time or min_time == 0):
                     min_time = ts
+                    # print('new min', ts)
                 if ts > max_time:
                     max_time = ts
+                    # print('new max', ts)
 
                 user_info = info.get('user', None)
                 if user is None and user_info is not None:
