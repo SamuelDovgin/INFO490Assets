@@ -27,7 +27,8 @@ class MetaData(object):
         self.lesson_id = lesson_id
         self.notebook_id = notebook_id
 
-        self.user = None
+        self.u_id   = None
+        self.u_name = None
         self.min_time = 0
         self.max_time = 0
 
@@ -36,8 +37,9 @@ class MetaData(object):
             self.min_time = min_time
         if self.max_time < max_time:
             self.max_time = max_time
-        if self.user is None:
-            self.user = user
+        if self.u_id is None:
+            self.u_id   = user['id']
+            self.u_name = user['name']
 
     def kv(self):
 
@@ -48,8 +50,9 @@ class MetaData(object):
             'max_time': self.max_time,
         }
 
-        if self.user is not None:
-            result['user'] = self.user
+        if self.u_id is not None:
+            result['u_id']   = self.u_id
+            result['u_name'] = self.u_name
         return result
 
 
@@ -76,6 +79,21 @@ class ClientTest(object):
 
     def get_meta(self):
         return self.meta
+
+    def register_install(self, mount_time):
+
+        end_point = "{:s}/register".format(self.server)
+
+        post_data = {"notebook_id": self.meta.notebook_id,
+                     "lesson_id": self.meta.lesson_id,
+                     "u_id": self.meta.u_id,
+                     "mount_time": mount_time}
+
+        response = requests.post(end_point, data=post_data)
+        if response.status_code != 200:
+            logger.log('install did not register', response.status_code)
+        else:
+            logger.log('register install at', mount_time)
 
     def send_zip(self, zipfile, fn_name=None):
 
