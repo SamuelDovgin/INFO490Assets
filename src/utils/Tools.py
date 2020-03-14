@@ -146,6 +146,7 @@ class TestFramework(object):
 
         if do_registration:
             mount_time = os.path.getctime(file)  # created on
+            logger.log('register', mount_time)
             # m_time = os.path.getmtime(file)  # modified on
             # must be DONE, after the parse (sets the meta data)
             self.client.register_install(mount_time)
@@ -154,8 +155,9 @@ class TestFramework(object):
             if the notebook was already started, 
             THEN the notebook timestamps could be earlier than the mount_time 
             however, it is unknown if the notebook timestamps persist across google sessions
-            
             """
+        else:
+            logger.log('skip register')
 
     def parse_code(self, text, as_is=False, remove_magic_cells=True):
         py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)

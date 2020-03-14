@@ -33,10 +33,13 @@ class MetaData(object):
         self.max_time = 0
 
     def update(self, min_time, max_time, user=None):
-        if self.min_time == 0:
+
+        if self.min_time == 0 or min_time < self.min_time:
             self.min_time = min_time
-        if self.max_time < max_time:
+
+        if self.max_time == 0 or max_time > self.max_time:
             self.max_time = max_time
+
         if self.u_id is None:
             self.u_id   = user['id']
             self.u_name = user['name']
