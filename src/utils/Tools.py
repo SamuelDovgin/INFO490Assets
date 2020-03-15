@@ -300,7 +300,7 @@ class TestFramework(object):
 
                     if print_warning:
                         print(msg)
-                        print("If you change", fn, "save the notebook before retesting")
+                        print("If you change", fn, ", SAVE the notebook before retesting")
 
                     # since the button text changes
                     # disabling the button, makes sense
