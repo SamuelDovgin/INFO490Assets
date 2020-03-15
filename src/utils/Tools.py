@@ -293,14 +293,13 @@ class TestFramework(object):
                             button.style = widgets.ButtonStyle(button_color='red')
                             button.description = 'Fail'
                     else:
+                        msg = ''
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}'.format(fn)
                         print(error)
-                        msg = ''
 
                     if print_warning:
                         print(msg)
-                        print("Using notebook version:", self.max_time)
                         print("If you change", fn, "save the notebook before retesting")
 
                     # since the button text changes
