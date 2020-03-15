@@ -132,7 +132,6 @@ class ClientTest(object):
         extra_kv = {"syntax_only": syntax_only,
                     "fn": fn_name}
 
-        print('LOG', extra_kv)
         zip_file = ZipLib.create_zipfile(filename)
         response = self.send_zip(zip_file, extra_kv=extra_kv)
         logger.log(response)
