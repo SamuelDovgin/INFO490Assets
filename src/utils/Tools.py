@@ -56,12 +56,31 @@ tester = install_testing_framework(LESSON_ID, NOTEBOOK_ID)
 tester.hello_world()
 '''
 
+
 def install_gd_file(doc_id, force=True, filename=None):
 
-    if not force and os.path.exists(filename):
-        logger.log("reading cached version")
-        with open(filename, 'r') as fd:
-            return fd.read()
+    n_time = time.time()
+    if os.path.exists(filename):
+        read_cache = False
+        m_time = os.path.getmtime(filename)  # modified time
+        dt0 = datetime.fromtimestamp(m_time)
+        dt1 = datetime.fromtimestamp(n_time)
+        if (dt1 - dt0).total_seconds() < 5:
+            read_cache = True
+
+        if not force:
+            # user wants to use the cache, regardless of age
+            read_cache = True
+
+        if force:
+            if read_cache:
+                logger.log("ignoring force flag")
+                force = False
+
+        if read_cache and not force:
+            logger.log("reading cached version")
+            with open(filename, 'r') as fd:
+                return fd.read(), m_time, True
 
     #
     # possible 403 if attempt is made too many times to download?
@@ -103,7 +122,8 @@ def install_gd_file(doc_id, force=True, filename=None):
         if filename is not None:
             with open(filename, 'w') as fd:
                 fd.write(text)
-        return text
+        return text, n_time, False
+
     except Exception as e:
         print("unable to load notebook at", url, str(e))
         return None
@@ -133,36 +153,25 @@ class TestFramework(object):
         self.parser = Parser.NBParser()
 
         file = TestFramework.JSON_FILE
-        do_registration = True
-        if os.path.exists(file):
-            # solution.json is THERE
-            # this install survived a refresh, or a rerun
-            do_registration = False
-
         # get the cached version if it exists
-        text = install_gd_file(notebook_id, force=False, filename=file)
-        assert os.path.exists(file), "Unable to find notebook"
+        text, m_time, is_cache = install_gd_file(notebook_id, force=False, filename=file)
+
+        # parse sets the meta data, do before anything else
         self.parse_code(text)
 
-        if do_registration:
-            mount_time = os.path.getctime(file)  # created on
-            logger.log('register', mount_time)
-            # m_time = os.path.getmtime(file)  # modified on
-            # must be DONE, after the parse (sets the meta data)
-            self.client.register_install(mount_time)
-
+        if not is_cache:
+            # had to download the notebook, must be a new session, when TestFrame created
+            self.client.register_install(m_time)
+        else:
             """
             if the notebook was already started, 
             THEN the notebook timestamps could be earlier than the mount_time 
             however, it is unknown if the notebook timestamps persist across google sessions
             """
-        else:
             logger.log('skip register')
 
     def parse_code(self, text, as_is=False, remove_magic_cells=True):
         py_code, min_ts, max_ts, user = self.parser.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
-        logger.log("using ", max_ts, datetime.fromtimestamp(max_ts).strftime('%Y-%m-%d %H:%M:%S'))
-        # logger.log(time.strftime("%D %H:%M", time.localtime(tsf)))
         self.client.get_meta().update(min_ts, max_ts, user)
         return py_code, min_ts, max_ts, user
 
@@ -179,7 +188,7 @@ class TestFramework(object):
 
         # download the notebook (it's a json file) if it's readable
         nb_id = self.client.get_meta().notebook_id
-        text = install_gd_file(nb_id, force=True, filename=ipy_fn)
+        text, m_time, is_cache = install_gd_file(nb_id, force=True, filename=ipy_fn)
         if not is_ipython(text):
             raise Exception("Make notebook viewable")
 
@@ -213,12 +222,12 @@ class TestFramework(object):
 
     def is_notebook_valid_python(self):
         self.write_file(as_is=True)
-        e, r = self.client.test_file(TestFramework.STUDENT_FILE)
+        e, r = self.client.test_file(TestFramework.STUDENT_FILE, syntax_only=True)
         return e is None, e
 
     def clean_notebook_for_download(self):
         self.write_file(as_is=False, remove_magic_cells=True)
-        e, r = self.client.test_file(TestFramework.STUDENT_FILE)
+        e, r = self.client.test_file(TestFramework.STUDENT_FILE, syntax_only=True)
         return e is None, e
 
     def test_notebook(self):
