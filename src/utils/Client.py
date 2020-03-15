@@ -19,7 +19,7 @@ except ImportError as e:
     SERVER = 'http://18.219.123.225:8080'  # AWS
 
 
-SERVER = 'http://192.168.1.78:8080'  # local
+#SERVER = 'http://192.168.1.78:8080'  # local
 
 class MetaData(object):
 
