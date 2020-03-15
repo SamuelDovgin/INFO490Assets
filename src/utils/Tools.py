@@ -65,20 +65,22 @@ def install_gd_file(doc_id, force=True, filename=None):
         m_time = os.path.getmtime(filename)  # modified time
         dt0 = datetime.fromtimestamp(m_time)
         dt1 = datetime.fromtimestamp(n_time)
-        if (dt1 - dt0).total_seconds() < 5:
+        age = (dt1 - dt0).total_seconds()
+
+        if age < 5:
             read_cache = True
 
         if not force:
-            # user wants to use the cache, regardless of age
+            logger.log('Reading aged file:', age)
             read_cache = True
 
         if force:
             if read_cache:
-                logger.log("ignoring force flag")
+                logger.log("Ignoring force flag")
                 force = False
 
         if read_cache and not force:
-            logger.log("reading cached version")
+            logger.log("Reading cached version")
             with open(filename, 'r') as fd:
                 return fd.read(), m_time, True
 
@@ -152,8 +154,10 @@ class TestFramework(object):
         self.client = client
         self.parser = Parser.NBParser()
 
+        # get the cached version if it exists, regardless of age
+        # if the file is still mounted on the drive
+        # there's no need to 'refresh' the file in this case
         file = TestFramework.JSON_FILE
-        # get the cached version if it exists
         text, m_time, is_cache = install_gd_file(notebook_id, force=False, filename=file)
 
         # parse sets the meta data, do before anything else
