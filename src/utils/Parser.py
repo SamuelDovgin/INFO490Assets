@@ -68,7 +68,7 @@ class NBParser(object):
 
                 ts = int(info.get('timestamp', 0))
                 tz = int(info.get('user_tz', 0))  # minutes off UTC
-                milli = (tz * 60) * 1000
+                milli = 0 # (tz * 60) * 1000
                 ts = (ts - milli)/1000.0
 
                 if ts != 0 and (ts < min_time or min_time == 0):

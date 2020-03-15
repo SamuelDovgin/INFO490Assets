@@ -17,8 +17,9 @@ except ImportError as e:
     backend = True
     SERVER = 'http://127.0.0.1:8080'
     SERVER = 'http://18.219.123.225:8080'  # AWS
-    SERVER = 'http://192.168.1.78:8080'    # local
 
+
+SERVER = 'http://192.168.1.78:8080'  # local
 
 class MetaData(object):
 
@@ -78,18 +79,19 @@ class ClientTest(object):
         logger.log("client version:", VERSION)
         logger.log("running in notebook:", backend is False)
         logger.log("server:", server)
-        logger.log("data:", meta.kv())
+        logger.log("data:", lesson_id, notebook_id)
 
     def get_meta(self):
         return self.meta
 
     def register_install(self, mount_time):
+        assert mount_time is not None, "bad timing"
 
         end_point = "{:s}/register".format(self.server)
-
         post_data = {"notebook_id": self.meta.notebook_id,
                      "lesson_id": self.meta.lesson_id,
                      "u_id": self.meta.u_id,
+                     "u_name": self.meta.u_name,
                      "mount_time": mount_time}
 
         response = requests.post(end_point, data=post_data)
@@ -98,26 +100,24 @@ class ClientTest(object):
         else:
             logger.log('register install at', mount_time)
 
-    def send_zip(self, zipfile, fn_name=None):
+    def send_zip(self, zipfile, extra_kv={}):
 
+        logger.log('sending out test')
         end_point = "{:s}/testzip".format(self.server)
+        # add in the meta data (notebook, assignment, etc)
+        post_data = extra_kv
+        kv = self.meta.kv()
+        for k in kv:
+            v = kv[k]
+            if isinstance(v, dict):
+                v = json.dumps(kv[k])
+            post_data[k] = v
 
         with open(zipfile, 'rb') as fd:
-            data = {'error_code': None, 'payload': {}}
-            post_data = {"fn": fn_name}
-
-            # add in the meta data (notebook, assignment, etc)
-            kv = self.meta.kv()
-            for k in kv:
-                v = kv[k]
-                if isinstance(v, dict):
-                    v = json.dumps(kv[k])
-                post_data[k] = v
-
-            print('posting', post_data)
             response = requests.post(end_point, data=post_data,
                                      files={"archive": (zipfile, fd)})
 
+            data = {'error_code': None, 'payload': {}}
             if response.status_code == 200:
                 data = response.json()  # json.loads(r.text)
             else:
@@ -127,12 +127,13 @@ class ClientTest(object):
     #
     # all tests must return TWO values (so NoOp will always work)
     #
-    def test_file(self, filename, fn_name=None):
+    def test_file(self, filename, fn_name=None, syntax_only=False):
 
-        logger.log("test", filename, self.get_meta().lesson_id, fn_name)
+        extra_kv = {"syntax_only": syntax_only,
+                    "fn": fn_name}
 
         zip_file = ZipLib.create_zipfile(filename)
-        response = self.send_zip(zip_file, fn_name)
+        response = self.send_zip(zip_file, extra_kv=extra_kv)
         logger.log(response)
 
         error = response['error_code']
