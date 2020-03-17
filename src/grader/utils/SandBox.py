@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime
 
-from utils.SimpleLogger import SimpleLogger
+from grader.utils.SimpleLogger import SimpleLogger
 
 
 def singleton(cls):
