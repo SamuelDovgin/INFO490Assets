@@ -10,11 +10,11 @@ try:
     VERSION = '03.15.2020'
     SERVER  = 'http://localhost:8080'
     SERVER  = 'http://18.219.123.225:8080'  # AWS
-    notebook = False
     import ipywidgets as widgets
     from IPython.display import display
+    is_notebook = True
 except ImportError as e:
-    notebook = True
+    is_notebook = False
 
 
 class MetaData(object):
@@ -68,7 +68,7 @@ class ClientTest(object):
             server = SERVER
 
         self.server       = server
-        self.is_notebook  = notebook
+        self.is_notebook  = is_notebook
         self.meta = meta
 
         self.logger = SandBox().get_logger()

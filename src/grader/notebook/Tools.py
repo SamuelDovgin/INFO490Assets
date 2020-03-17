@@ -158,7 +158,7 @@ class TestFramework(object):
 
     def test_with_button(self, fn):
 
-        if self.client.is_backend:
+        if not self.client.is_notebook:
             return 'unable to test with gui on server side'
 
         if callable(fn):
