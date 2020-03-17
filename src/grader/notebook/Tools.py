@@ -18,11 +18,11 @@ however, it is unknown if the notebook timestamps persist across google sessions
 
 from datetime import datetime
 #
-# assumes src/grader is in the path
+# assumes src is in the path
 #
-from utils import Client, ToolBox
-from utils.SandBox import SandBox
-from notebook import Parser
+from grader.utils import Client, ToolBox
+from grader.utils.SandBox import SandBox
+from grader.notebook import Parser
 
 
 '''
@@ -32,7 +32,7 @@ from notebook import Parser
 #
 def install_testing_framework(lesson_id, notebook_id):
     import sys
-    sys.path.append('info490/src')
+    sys.path.append('info490/src/grader')
     class Nop(object):
         def __init__(self, e): self.e = e
         # NOTE this returns two Values
@@ -40,11 +40,11 @@ def install_testing_framework(lesson_id, notebook_id):
         def __getattr__(self, _): return self.nop
     try:
         from notebook import Tools, Parser
-        from utils import Client, SimpleLogger
-        import importlib
-        importlib.reload(Parser)
-        importlib.reload(Tools)
-        importlib.reload(Client)
+        #from utils import Client
+        #import importlib
+        #importlib.reload(Parser)
+        #importlib.reload(Tools)
+        #importlib.reload(Client)
         return Tools.TestFramework(lesson_id, notebook_id)
     except ImportError as e:
         # happens on the test side, or if code never mounted

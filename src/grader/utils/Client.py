@@ -3,8 +3,8 @@ import os
 import json
 import requests
 
-from utils.SandBox import SandBox
-import utils.ZipLib as ZipLib
+from grader.utils.SandBox import SandBox
+import grader.utils.ZipLib as ZipLib
 
 try:
     VERSION = '03.15.2020'

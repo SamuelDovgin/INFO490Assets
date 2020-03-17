@@ -9,7 +9,7 @@ import requests
 from datetime import datetime
 import time
 
-from utils.SandBox import SandBox
+from grader.utils.SandBox import SandBox
 
 logger = SandBox().get_logger()
 def install_gd_file(doc_id, force=True, filename=None):

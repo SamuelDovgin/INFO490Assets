@@ -2,7 +2,8 @@
 import os
 from zipfile import ZipFile
 
-from utils.SandBox import SandBox
+
+from grader.utils.SandBox import SandBox
 
 logger = SandBox().get_logger()
 
