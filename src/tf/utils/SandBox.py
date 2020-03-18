@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime
 
-from grader.utils.SimpleLogger import SimpleLogger
+from tf.utils.SimpleLogger import SimpleLogger
 
 
 def singleton(cls):
@@ -28,6 +28,9 @@ class SandBox(object):
         self._logger = SimpleLogger(SANDBOX_DIR)
         self._sandbox = SANDBOX_DIR
 
+        # a session has to do with persistence
+        # on line editors (colab, replit) will timeout after
+        # non activity
         self.session_created = False
         if not os.path.exists(SESSION_FILE):
             self.session_created = True

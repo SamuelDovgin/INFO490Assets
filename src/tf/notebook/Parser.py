@@ -2,11 +2,11 @@
 import json
 
 
-from grader.utils.SandBox import SandBox
+from tf.utils.SandBox import SandBox
 
 
 #
-# assumes sure src/grader is in the path
+# assumes sure src/tf is in the path
 #
 
 class ParseValues(object):

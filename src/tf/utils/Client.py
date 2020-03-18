@@ -3,8 +3,8 @@ import os
 import json
 import requests
 
-from grader.utils.SandBox import SandBox
-import grader.utils.ZipLib as ZipLib
+from tf.utils.SandBox import SandBox
+import tf.utils.ZipLib as ZipLib
 
 try:
     VERSION = '03.15.2020'
@@ -74,7 +74,7 @@ class ClientTest(object):
         self.logger = SandBox().get_logger()
 
         self.logger.log("client version:", VERSION)
-        self.logger.log("running in notebook:", notebook is False)
+        self.logger.log("running in notebook:", is_notebook is False)
         self.logger.log("server:", server)
         self.logger.log("data:", lesson_id, notebook_id)
 

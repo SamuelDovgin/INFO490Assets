@@ -20,9 +20,9 @@ from datetime import datetime
 #
 # assumes src is in the path
 #
-from grader.utils import Client, ToolBox
-from grader.utils.SandBox import SandBox
-from grader.notebook import Parser
+from tf.utils import Client, ToolBox
+from tf.utils.SandBox import SandBox
+from tf.notebook import Parser
 
 
 '''
@@ -38,10 +38,10 @@ def install_testing_framework(lesson_id, notebook_id):
         def nop(self, *args, **kw): return("unable to test:" + self.e, None)
         def __getattr__(self, _): return self.nop
     try:
-        from grader.notebook import Tools
+        from tf.notebook import Tools
         import importlib
-        from grader.notebook import Parser
-        from grader.utils import Client
+        from tf.notebook import Parser
+        from tf.utils import Client
         importlib.reload(Parser)
         importlib.reload(Tools)
         importlib.reload(Client)
