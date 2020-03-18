@@ -32,26 +32,29 @@ from grader.notebook import Parser
 #
 def install_testing_framework(lesson_id, notebook_id):
     import sys
-    sys.path.append('info490/src/grader')
+    sys.path.append('info490/src/')
     class Nop(object):
         def __init__(self, e): self.e = e
-        # NOTE this returns two Values
         def nop(self, *args, **kw): return("unable to test:" + self.e, None)
         def __getattr__(self, _): return self.nop
     try:
-        from notebook import Tools, Parser
-        #from utils import Client
-        #import importlib
-        #importlib.reload(Parser)
-        #importlib.reload(Tools)
-        #importlib.reload(Client)
+        from grader.notebook import Tools
+        import importlib
+        from grader.notebook import Parser
+        from grader.utils import Client
+        importlib.reload(Parser)
+        importlib.reload(Tools)
+        importlib.reload(Client)
         return Tools.TestFramework(lesson_id, notebook_id)
     except ImportError as e:
+        #import traceback
+        #traceback.print_exc()
         # happens on the test side, or if code never mounted
         return Nop(str(e))
 
 tester = install_testing_framework(LESSON_ID, NOTEBOOK_ID)
 tester.hello_world()
+
 '''
 
 
