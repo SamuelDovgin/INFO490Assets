@@ -3,7 +3,7 @@ import os
 from zipfile import ZipFile
 
 
-from grader.utils.SandBox import SandBox
+from tf.utils.SandBox import SandBox
 
 logger = SandBox().get_logger()
 
