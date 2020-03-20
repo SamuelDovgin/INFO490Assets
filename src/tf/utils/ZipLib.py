@@ -23,12 +23,12 @@ def create_zipfile(dir_or_file, output_dir='./'):
 
     old_dir = os.getcwd()
     try:
-        # python client.py assn1/
+        # cli client.py assn1/
         if os.path.isdir(dir_or_file) and dir_or_file != '.':
             os.chdir(dir_or_file)
             dir_or_file = '.'
 
-        # python client.py assn1/solution.py
+        # cli client.py assn1/solution.py
         parts = os.path.split(dir_or_file)
         if len(parts) == 2 and os.path.isfile(dir_or_file):
             if len(parts[0]) > 0:
