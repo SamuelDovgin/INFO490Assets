@@ -103,7 +103,7 @@ class NBParser(object):
                     if len(line) > 0:
                         cell_code.append(line.rstrip())
 
-                # option:  if a cell is mixed with magic and cli
+                # option:  if a cell is mixed with magic and python
                 '''
                 !ls -la
                 %% HTML 

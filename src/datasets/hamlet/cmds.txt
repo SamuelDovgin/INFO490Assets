@@ -1,0 +1,2 @@
+md5 pg2265.txt > pg2265.txt.md5
+shasum -a 256 pg2265.txt > pg2265.txt.sha
