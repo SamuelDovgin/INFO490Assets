@@ -1,5 +1,6 @@
 .idea/
 *.zip
+*.pxm
 debug_log.txt
 solution.json
 solution.py
