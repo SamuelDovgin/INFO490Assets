@@ -1,2 +1,4 @@
 md5 pg2265.txt > pg2265.txt.md5
 shasum -a 256 pg2265.txt > pg2265.txt.sha
+
+AFTER SPRING 2020 move this directory under pg
