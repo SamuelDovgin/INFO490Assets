@@ -10,6 +10,7 @@ try:
     VERSION = '03.15.2020'
     SERVER  = 'http://localhost:8080'
     SERVER  = 'http://18.219.123.225:8080'  # AWS
+    SERVER  = 'http://75.156.71.78:8080'  # MEH
     import ipywidgets as widgets
     from IPython.display import display
     is_notebook = True
@@ -163,7 +164,8 @@ class ClientTest(object):
         if error is None:
             for t in result['tests']:
                 if t['name'] == fn_name:
-                    return None, "{}:{}:{}".format(t['score'], t['max_score'], t['output'].strip())
+                    output = t.get('output', "").strip()
+                    return None, "{}:{}:{}".format(t['score'], t['max_score'], output)
             return None, "0:0:no tests for " + fn_name
         else:
             return error, "0:0:NA"
