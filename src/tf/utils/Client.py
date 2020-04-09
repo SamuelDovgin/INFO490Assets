@@ -162,11 +162,20 @@ class ClientTest(object):
     def test_function(self, filename, fn_name):
         error, result = self.test_file(filename, fn_name)
         if error is None:
+            message = "0:0:no tests for " + fn_name
             for t in result['tests']:
                 if t['name'] == fn_name:
-                    output = t.get('output', "").strip()
-                    return None, "{}:{}:{}".format(t['score'], t['max_score'], output)
-            return None, "0:0:no tests for " + fn_name
+                    score = t.get('score', 0)
+                    max_score = t.get('max_score', 100)
+                    output = t.get('output', None)
+                    if output is None:
+                        if score == max_score:
+                            output = "Passed"
+                        else:
+                            output = "Incomplete"
+                    message = "{}:{}:{}".format(score, max_score, output.strip())
+                    break
+            return None, message
         else:
             return error, "0:0:NA"
 
