@@ -167,12 +167,11 @@ class ClientTest(object):
                 if t['name'] == fn_name:
                     score = t.get('score', 0)
                     max_score = t.get('max_score', 100)
-                    output = t.get('output', None)
-                    if output is None:
-                        if score == max_score:
-                            output = "Passed"
-                        else:
-                            output = "Incomplete"
+                    output = t.get('output', "")
+                    if score == max_score:
+                        output = "Passed " + output
+                    else:
+                        output = "Incomplete " + output
                     message = "{}:{}:{}".format(score, max_score, output.strip())
                     break
             return None, message
