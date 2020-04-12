@@ -2,8 +2,23 @@
 import json
 
 
-from tf.utils.SandBox import SandBox
+class Nop(object):
 
+    def __init__(self, msg='no op'):
+        self.msg = msg
+
+    def nop(self, *args, **kw):
+        return self.msg
+
+    def __getattr__(self, _):
+        return self.nop
+
+try:
+   from tf.utils.SandBox import SandBox
+   logger = SandBox().get_logger()
+except ImportError:
+    print("logger not being used")
+    logger = Nop()
 
 #
 # assumes sure src/tf is in the path
@@ -35,7 +50,7 @@ def illegal_code(line):
 class NBParser(object):
 
     def __init__(self):
-        self.logger = SandBox().get_logger()
+        self.logger = logger
         pass
 
     def get_times(self, filename):
