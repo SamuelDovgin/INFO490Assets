@@ -1,6 +1,9 @@
 
 import json
+import re
 
+
+INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
 class Nop(object):
 
@@ -30,6 +33,22 @@ class ParseValues(object):
         self.user = user
         self.timestamp = timestamp
 
+
+def comment_out(line, options):
+    clean = line.lstrip()
+    if len(options) > 0:
+        for regex in options:
+            if regex.match(clean):
+                m = INDENT_REGEX.match(clean)
+                print('found space', m.start(1), m.end(1))
+                s = m.start(1)
+                e = m.end(1)
+                # return the amount of whitespace
+                # before the match
+                return True, m[s:e]
+    return False, None
+
+
 def illegal_code(line):
 
     bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
@@ -49,9 +68,9 @@ def illegal_code(line):
 
 class NBParser(object):
 
-    def __init__(self):
+    def __init__(self, options=[]):
         self.logger = logger
-        pass
+        self.options = options
 
     def get_times(self, filename):
         with open(filename, 'r') as fd:
@@ -105,7 +124,12 @@ class NBParser(object):
 
                 for line in cell['source']:
                     if not as_is:
-                        if illegal_code(line):
+
+                        found, space = comment_out(line, self.options)
+                        if found:
+                            line = space + 'pass #' + line
+
+                        elif illegal_code(line):
                             if remove_magic_cells:
                                 cell_code = []
                                 break
@@ -133,7 +157,6 @@ class NBParser(object):
                 
                 '''
 
-                # 1.  if the cell is all magic remove it
                 # 1.  if the cell is all magic remove it
                 lines.extend(cell_code)
 
