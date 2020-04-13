@@ -35,11 +35,12 @@ class ParseValues(object):
 
 
 def comment_out(line, options):
-    clean = line.lstrip()
     if len(options) > 0:
+        clean = line.rstrip()
         for regex in options:
             if regex.match(clean):
                 m = INDENT_REGEX.match(clean)
+                print('found space', clean)
                 print('found space', m.start(1), m.end(1))
                 s = m.start(1)
                 e = m.end(1)
