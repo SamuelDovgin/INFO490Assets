@@ -42,11 +42,9 @@ def comment_out(line, options):
                 print('found pattern:', clean + ':')
                 m = INDENT_REGEX.match(clean)
                 print('found space', m.start(1), m.end(1))
-                s = m.start(1)
-                e = m.end(1)
-                # return the amount of whitespace
-                # before the match
-                return True, m[s:e]
+                total = m.end(1) - m.start(1)
+                l = " " * total + 'pass #' + line.lstrip()
+                return True, l
     return False, None
 
 
@@ -126,9 +124,9 @@ class NBParser(object):
                 for line in cell['source']:
                     if not as_is:
 
-                        found, space = comment_out(line, self.options)
+                        found, n_line = comment_out(line, self.options)
                         if found:
-                            line = space + 'pass #' + line
+                            line = n_line
 
                         elif illegal_code(line):
                             if remove_magic_cells:
