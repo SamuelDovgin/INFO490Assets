@@ -39,12 +39,12 @@ def comment_out(line, options):
         clean = line.rstrip()
         for regex in options:
             if regex.match(clean):
-                print('found pattern:', clean + ':')
+                #print('found pattern:', clean + ':')
                 m = INDENT_REGEX.match(clean)
-                print('found space', m.start(1), m.end(1))
+                #print('found space', m.start(1), m.end(1))
                 total = m.end(1) - m.start(1)
-                l = " " * total + 'pass #' + line.lstrip()
-                return True, l
+                new_line = " " * total + 'pass #' + line.lstrip()
+                return True, new_line
     return False, None
 
 
@@ -127,7 +127,6 @@ class NBParser(object):
                         found, n_line = comment_out(line, self.options)
                         if found:
                             line = n_line
-
                         elif illegal_code(line):
                             if remove_magic_cells:
                                 cell_code = []
