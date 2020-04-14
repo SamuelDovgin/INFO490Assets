@@ -159,6 +159,7 @@ class TestFramework(object):
         if error is None and verbose:
             score, max_score, msg = msg.split(':', maxsplit=2)
             msg = "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
+            return msg
         return error, msg
 
     def test_with_button(self, fn):
@@ -207,7 +208,7 @@ class TestFramework(object):
                         msg = ''
                         button.style = widgets.ButtonStyle(button_color='red')
                         button.description = 'FAIL: {}'.format(fn)
-                        print(error)
+                        print("Error:", error)
 
                     if print_warning:
                         print(msg)
