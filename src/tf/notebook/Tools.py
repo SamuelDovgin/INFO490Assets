@@ -157,13 +157,14 @@ class TestFramework(object):
         self.write_file(as_is=False, remove_magic_cells=True)
         error, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
 
-        if error:
-            return "Error: {:s}".format(error)
-        elif verbose:
-            score, max_score, msg = msg.split(':', maxsplit=2)
-            return "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
+        if verbose:
+            if error is not None:
+                return "Error: {:s}".format(error)
+            else:
+                score, max_score, msg = msg.split(':', maxsplit=2)
+                return "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
         else:
-            return msg
+            return error, msg
 
     def test_with_button(self, fn):
 
