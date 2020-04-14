@@ -147,7 +147,7 @@ class TestFramework(object):
         #
         return e, r
 
-    def test_function(self, fn):
+    def test_function(self, fn, verbose=False):
 
         assert fn is not None, "fn is None"
 
@@ -156,7 +156,9 @@ class TestFramework(object):
 
         self.write_file(as_is=False, remove_magic_cells=True)
         error, msg = self.client.test_function(TestFramework.STUDENT_FILE, fn)
-        #score, max_score, msg = msg.split(':', maxsplit=2)
+        if error is None and verbose:
+            score, max_score, msg = msg.split(':', maxsplit=2)
+            msg = "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
         return error, msg
 
     def test_with_button(self, fn):

@@ -2,7 +2,7 @@
 import json
 import re
 
-
+print_regex  = re.compile(r'^\s*print\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
 class Nop(object):
@@ -69,7 +69,9 @@ class NBParser(object):
 
     def __init__(self, options=[]):
         self.logger = logger
-        self.options = options
+        self.options = [print_regex]
+        for o in options:
+            self.options.append(o)
 
     def get_times(self, filename):
         with open(filename, 'r') as fd:
