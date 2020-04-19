@@ -147,7 +147,7 @@ class TestFramework(object):
         #
         return e, r
 
-    def test_function(self, fn, verbose=False):
+    def test_function(self, fn, verbose=True):
 
         assert fn is not None, "fn is None"
 
