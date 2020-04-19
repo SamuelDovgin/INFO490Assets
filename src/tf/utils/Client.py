@@ -83,7 +83,7 @@ class ClientTest(object):
     def get_meta(self):
         return self.meta
 
-    def register_session(self):
+    def _register_session(self):
 
         did_create, m_time = SandBox().get_session_information()
         if not did_create:
@@ -107,7 +107,12 @@ class ClientTest(object):
 
     def send_zip(self, zipfile, extra_kv={}):
 
-        self.register_session()
+        try:
+            self._register_session()
+        except (ConnectionError, ConnectionRefusedError) as e:
+            self.logger.log('ERROR (is server running)', str(e))
+            msg = {'error_code': 'Unable to connect to server'}
+            return msg
 
         end_point = "{:s}/testzip".format(self.server)
         # add in the meta data (notebook, assignment, etc)
