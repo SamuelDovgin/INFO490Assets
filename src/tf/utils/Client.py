@@ -109,7 +109,8 @@ class ClientTest(object):
 
         try:
             self._register_session()
-        except (ConnectionError, ConnectionRefusedError) as e:
+        except Exception as e:
+            #except (ConnectionError, ConnectionRefusedError) as e:
             self.logger.log('ERROR (is server running)', str(e))
             msg = {'error_code': 'Unable to connect to server'}
             return msg
