@@ -111,7 +111,7 @@ class ClientTest(object):
             self._register_session()
         except Exception as e:
             #except (ConnectionError, ConnectionRefusedError) as e:
-            self.logger.log('ERROR (is server running)', str(e))
+            self.logger.log('ERROR (is server running?)', str(e))
             msg = {'error_code': 'Unable to connect to server'}
             return msg
 
@@ -121,6 +121,7 @@ class ClientTest(object):
         kv = self.meta.kv()
         for k in kv:
             v = kv[k]
+            self.logger.log('adding', k, v, ' TO ', post_data)
             if isinstance(v, dict):
                 v = json.dumps(kv[k])
             post_data[k] = v
@@ -169,6 +170,8 @@ class ClientTest(object):
         error, result = self.test_file(filename, fn_name)
         if error is None:
             message = "0:0:no tests for " + fn_name
+            # it's possible that the test matched a few possibilities
+            # so search for the exact match
             for t in result['tests']:
                 if t['name'] == fn_name:
                     score = t.get('score', 0)

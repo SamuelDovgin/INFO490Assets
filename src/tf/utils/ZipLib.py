@@ -6,6 +6,8 @@ from zipfile import ZipFile
 from tf.utils.SandBox import SandBox
 
 logger = SandBox().get_logger()
+ZIP_FILE = "test.zip"  # server assumes this
+
 
 def valid_file(fn):
 
@@ -16,10 +18,12 @@ def valid_file(fn):
     return True
 
 
-def create_zipfile(dir_or_file, output_dir='./'):
+def create_zipfile(dir_or_file, output_dir='.'):
 
-    zipfile = "test.zip"  # server assumes this
-    output = '{:s}/{:s}'.format(output_dir, zipfile)
+    zipfile = '{:s}/{:s}'.format(output_dir, ZIP_FILE)
+
+    # need the abs path to the zip file
+    zipfile = os.path.abspath(zipfile)
 
     old_dir = os.getcwd()
     try:
@@ -35,6 +39,7 @@ def create_zipfile(dir_or_file, output_dir='./'):
                 os.chdir(parts[0])
             dir_or_file = parts[1]
 
+        #logger.log('create', zipfile, ' fp ', os.getcwd())
         with ZipFile(zipfile, 'w') as zipObj:
             # Iterate over all the files in directory
             if os.path.isdir(dir_or_file):
@@ -50,7 +55,7 @@ def create_zipfile(dir_or_file, output_dir='./'):
                 logger.log("adding", dir_or_file)
                 zipObj.write(dir_or_file)
 
-            return output
+            return zipfile
     finally:
         os.chdir(old_dir)
 
