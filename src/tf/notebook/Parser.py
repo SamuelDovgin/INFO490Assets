@@ -5,6 +5,15 @@ import re
 print_regex  = re.compile(r'^\s*print\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 
+
+#
+# assumes src/tf is in the path
+#
+
+# TODO: parse out individual functions
+# BUT this is an issue if use external/helper functions
+#
+
 class Nop(object):
 
     def __init__(self, msg='no op'):
@@ -23,9 +32,7 @@ except ImportError:
     print("logger not being used")
     logger = Nop()
 
-#
-# assumes sure src/tf is in the path
-#
+
 
 class ParseValues(object):
     def __init__(self, code, user, timestamp):
