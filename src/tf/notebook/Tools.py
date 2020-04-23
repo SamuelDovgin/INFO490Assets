@@ -101,6 +101,7 @@ class TestFramework(object):
         nb_id = self.client.get_meta().notebook_id
         text, m_time, is_cache = ToolBox.install_gd_file(nb_id, force=True, filename=ipy_fn)
         if not ToolBox.is_ipython(text):
+            print(TestFramework.ERROR_MSG)
             raise Exception(TestFramework.ERROR_MSG)
 
         # a tuple of values
