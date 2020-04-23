@@ -160,8 +160,8 @@ class TestFramework(object):
         if verbose:
             # make result user friendly for display
             if e is None:
-                score = r.get('score', 0)
-                return "Score {:s}/{:d}".format(score, max_score)
+                score = int(r.get('score', 0))
+                return "Score {:d}/{:d}".format(score, max_score)
             else:
                 return "ERROR: {:s}".format(str(e))
 
