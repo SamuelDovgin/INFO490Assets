@@ -24,6 +24,7 @@ from tf.utils import Client, ToolBox
 from tf.utils.SandBox import SandBox
 from tf.notebook import Parser
 
+import json
 
 '''
 #
@@ -152,12 +153,19 @@ class TestFramework(object):
         else:
             return False, e
 
-    def test_notebook(self):
+    def test_notebook(self, verbose=True, max_score=100):
         filename = self.write_file(as_is=False, remove_magic_cells=True)
         e, r = self.client.test_file(filename)
-        #
-        # TODO: make result user friendly for display
-        #
+
+        if verbose:
+            # make result user friendly for display
+            if e is None:
+                msg = json.loads(r)
+                score = msg.get('score', 0)
+                return "Score {:s}/{:d}".format(score, max_score)
+            else:
+                return "ERROR: {:s}".format(str(e))
+
         return e, r
 
     def test_function(self, fn, verbose=True):
