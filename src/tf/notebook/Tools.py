@@ -39,9 +39,9 @@ def install_testing_framework(lesson_id, notebook_id):
         def __getattr__(self, _): return self.nop
     try:
         from tf.notebook import Tools
-        import importlib
         from tf.notebook import Parser
         from tf.utils import Client
+        import importlib
         importlib.reload(Parser)
         importlib.reload(Tools)
         importlib.reload(Client)
