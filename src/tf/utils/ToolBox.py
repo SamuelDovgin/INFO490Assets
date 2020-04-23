@@ -34,10 +34,13 @@ def install_gd_file(doc_id, force=True, filename=None):
                 logger.log("Ignoring force flag")
                 force = False
 
-        if read_cache and not force:
-            logger.log("Reading cached version:", filename, ":")
-            with open(filename, 'r') as fd:
-                return fd.read(), m_time, True
+        if os.path.getsize(filename) > 100:
+            if read_cache and not force:
+                logger.log("Reading cached version:", filename, ":")
+                with open(filename, 'r') as fd:
+                    return fd.read(), m_time, True
+        else:
+            logger.log("Bad file size")
 
     #
     # possible 403 if attempt is made too many times to download?
@@ -76,7 +79,7 @@ def install_gd_file(doc_id, force=True, filename=None):
             return r.text
 
         text = v2()
-        if filename is not None:
+        if filename is not None and text is not None and len(text) > 0:
             with open(filename, 'w') as fd:
                 fd.write(text)
         return text, n_time, False
