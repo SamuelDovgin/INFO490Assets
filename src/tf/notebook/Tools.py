@@ -41,15 +41,19 @@ def install_testing_framework(lesson_id, notebook_id):
         from tf.notebook import Tools
         from tf.notebook import Parser
         from tf.utils import Client
+        
         import importlib
+        from tf.utils import ToolBox
         importlib.reload(Parser)
         importlib.reload(Tools)
         importlib.reload(Client)
+        importlib.reload(ToolBox)
+        
         return Tools.TestFramework(lesson_id, notebook_id)
     except ImportError as e:
         #import traceback
         #traceback.print_exc()
-        # happens on the test side, or if code never mounted
+        #happens on the test side, or if code never mounted
         return Nop(str(e))
 
 tester = install_testing_framework(LESSON_ID, NOTEBOOK_ID)
@@ -73,7 +77,7 @@ class TestFramework(object):
         self.client = client
         self.parser = Parser.NBParser()
 
-        text, m_time, is_cache = ToolBox.install_gd_file(notebook_id, force=False, filename=TestFramework.JSON_FILE)
+        text, m_time, is_cache = ToolBox.install_gd_file(notebook_id, force=True, filename=TestFramework.JSON_FILE)
         if not ToolBox.is_ipython(text):
             print(TestFramework.ERROR_MSG)
             raise Exception(TestFramework.ERROR_MSG)
