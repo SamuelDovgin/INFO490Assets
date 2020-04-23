@@ -7,10 +7,10 @@ from tf.utils.SandBox import SandBox
 import tf.utils.ZipLib as ZipLib
 
 try:
-    VERSION = '03.15.2020'
+    VERSION = '04.20.2020'
     SERVER  = 'http://localhost:8080'
-    SERVER  = 'http://18.219.123.225:8080'  # AWS
     SERVER  = 'http://75.156.71.78:8080'    # MEH
+    SERVER  = 'http://18.219.123.225:8080'  # AWS
     import ipywidgets as widgets
     from IPython.display import display
     is_notebook = True
