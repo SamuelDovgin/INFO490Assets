@@ -171,11 +171,14 @@ class TestFramework(object):
         error, msg = self.client.test_function(filename, fn)
 
         if verbose:
+            # if it's verbose, just return a single string
+            # to make for easy printing
             if error is not None:
-                error = "Error: {:s}".format(error)
+                return "Error: {:s}".format(error)
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
-                msg = "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
+                return "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
+
         return error, msg
 
     def test_with_button(self, fn):
