@@ -172,7 +172,6 @@ class TestFramework(object):
         if verbose:
             if error is not None:
                 error = "Error: {:s}".format(error)
-                msg = None
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
                 msg = "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
