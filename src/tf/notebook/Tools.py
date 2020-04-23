@@ -77,7 +77,7 @@ class TestFramework(object):
         self.client = client
         self.parser = Parser.NBParser()
 
-        text, m_time, is_cache = ToolBox.install_gd_file(notebook_id, force=True, filename=TestFramework.JSON_FILE)
+        text, m_time, is_cache = ToolBox.install_gd_file(notebook_id, filename=TestFramework.JSON_FILE)
         if not ToolBox.is_ipython(text):
             print(TestFramework.ERROR_MSG)
             raise Exception(TestFramework.ERROR_MSG)
@@ -103,7 +103,7 @@ class TestFramework(object):
 
         # download the notebook (it's a json file) if it's readable
         nb_id = self.client.get_meta().notebook_id
-        text, m_time, is_cache = ToolBox.install_gd_file(nb_id, force=True, filename=ipy_fn)
+        text, m_time, is_cache = ToolBox.install_gd_file(nb_id, filename=ipy_fn)
         if not ToolBox.is_ipython(text):
             print(TestFramework.ERROR_MSG)
             raise Exception(TestFramework.ERROR_MSG)
@@ -112,7 +112,6 @@ class TestFramework(object):
         results = self.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
         with open(py_fn, 'w') as fd:
             fd.write(results[0])
-
 
     #
     # PUBLIC API

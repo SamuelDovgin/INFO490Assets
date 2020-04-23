@@ -12,7 +12,7 @@ import time
 from tf.utils.SandBox import SandBox
 
 logger = SandBox().get_logger()
-def install_gd_file(doc_id, force=True, filename=None):
+def install_gd_file(doc_id, filename=None, cache_time=5):
 
     n_time = time.time()
     if os.path.exists(filename):
@@ -22,28 +22,16 @@ def install_gd_file(doc_id, force=True, filename=None):
         dt1 = datetime.fromtimestamp(n_time)
         age = (dt1 - dt0).total_seconds()
 
-        if age < 5:
+        if age < cache_time:
             read_cache = True
 
-        # issue is if the last write was html or invalid url
-        # we still want to download
-        if not force:
-            logger.log('WARNING: Reading aged file:', age)
-            read_cache = True
-
-        if force:
-            if read_cache:
-                logger.log("Ignoring force flag")
-                force = False
-
-        if os.path.getsize(filename) > 100:
-            if read_cache and not force:
+        if read_cache:
+            if os.path.getsize(filename) > 10:
                 logger.log("Reading cached version:", filename, ":")
                 with open(filename, 'r') as fd:
                     return fd.read(), m_time, True
-        else:
-            logger.log("Bad file size")
-
+            else:
+                logger.log("Bad file size")
     #
     # possible 403 if attempt is made too many times to download?
     # seems to be temporary -- don't fire off too many requests
@@ -73,8 +61,10 @@ def install_gd_file(doc_id, force=True, filename=None):
             #r = requests.get(baseurl, params)
             logger.log('fetching google doc', url)
             r = requests.get(url)
+            r.encoding = 'utf-8'
             if r.status_code != 200:
-                print(r.headers)
+                logger.log('bad request:', r.status_code)
+                logger.log('headers:', r.headers)
                 print("unable to download google doc")
                 print('status', r.status_code)
                 return None
