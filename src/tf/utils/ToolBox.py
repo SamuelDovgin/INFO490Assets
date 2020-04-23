@@ -25,8 +25,10 @@ def install_gd_file(doc_id, force=True, filename=None):
         if age < 5:
             read_cache = True
 
+        # issue is if the last write was html or invalid url
+        # we still want to download
         if not force:
-            logger.log('Reading aged file:', age)
+            logger.log('WARNING: Reading aged file:', age)
             read_cache = True
 
         if force:
