@@ -4,12 +4,14 @@ import re
 
 print_regex  = re.compile(r'^\s*print\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
+scope0_function_call = re.compile(r'^[a-z_][a-z0-9_]*\(', re.IGNORECASE)
 
 
 #
 # assumes src/tf is in the path
 #
 
+# TODO: comment out scope 0 function calls
 # TODO: parse out individual functions
 # BUT this is an issue if use external/helper functions
 #
@@ -76,7 +78,7 @@ class NBParser(object):
 
     def __init__(self, options=[]):
         self.logger = logger
-        self.options = [print_regex]
+        self.options = [print_regex, scope0_function_call]
         for o in options:
             self.options.append(o)
 
