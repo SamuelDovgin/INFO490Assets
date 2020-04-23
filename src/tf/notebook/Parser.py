@@ -62,7 +62,8 @@ def comment_out(line, options):
 
 def illegal_code(line):
 
-    bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
+    # bad_news = ['from google.colab', 'import google', 'import IPython', 'from IPython']
+    bad_news = ['from google', 'import google', 'import IPython', 'from IPython']
 
     clean = line.lstrip()
     if len(clean) > 0 and clean[0] in ['!', '%']:

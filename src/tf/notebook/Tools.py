@@ -62,6 +62,7 @@ class TestFramework(object):
 
     JSON_FILE    = '{:s}/solution.json'.format(SandBox().get_sandbox_dir())
     STUDENT_FILE = '{:s}/solution.py'.format(SandBox().get_sandbox_dir())
+    ERROR_MSG = "Make notebook viewable"
 
     def __init__(self, lesson_id, notebook_id, client=None):
 
@@ -74,7 +75,8 @@ class TestFramework(object):
 
         text, m_time, is_cache = ToolBox.install_gd_file(notebook_id, force=False, filename=TestFramework.JSON_FILE)
         if not ToolBox.is_ipython(text):
-            raise Exception("Make notebook viewable")
+            print(TestFramework.ERROR_MSG)
+            raise Exception(TestFramework.ERROR_MSG)
 
         # parse sets the meta data, do before anything else
         self.parse_code(text)
@@ -99,7 +101,7 @@ class TestFramework(object):
         nb_id = self.client.get_meta().notebook_id
         text, m_time, is_cache = ToolBox.install_gd_file(nb_id, force=True, filename=ipy_fn)
         if not ToolBox.is_ipython(text):
-            raise Exception("Make notebook viewable")
+            raise Exception(TestFramework.ERROR_MSG)
 
         # a tuple of values
         results = self.parse_code(text, as_is=as_is, remove_magic_cells=remove_magic_cells)
@@ -135,6 +137,9 @@ class TestFramework(object):
         return e is None, e
 
     def clean_notebook_for_download(self):
+        # remove magic cells
+        # will remove the entire download_notebook cell
+        # since it using google.files (see parser)
         self.write_file(as_is=False, remove_magic_cells=True)
         e, r = self.client.test_file(TestFramework.STUDENT_FILE, syntax_only=True)
         if e is None:
