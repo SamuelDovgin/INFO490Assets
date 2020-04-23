@@ -12,6 +12,8 @@ import time
 from tf.utils.SandBox import SandBox
 
 logger = SandBox().get_logger()
+
+
 def install_gd_file(doc_id, filename=None, cache_time=5):
 
     n_time = time.time()
@@ -31,7 +33,7 @@ def install_gd_file(doc_id, filename=None, cache_time=5):
                 with open(filename, 'r') as fd:
                     return fd.read(), m_time, True
             else:
-                logger.log("Bad file size")
+                logger.log("Unable to read cache: Bad file size")
     #
     # possible 403 if attempt is made too many times to download?
     # seems to be temporary -- don't fire off too many requests
@@ -74,6 +76,9 @@ def install_gd_file(doc_id, filename=None, cache_time=5):
         if filename is not None and text is not None and len(text) > 0:
             with open(filename, 'w') as fd:
                 fd.write(text)
+        else:
+            logger.log("Unable to write file", filename)
+
         return text, n_time, False
 
     except Exception as e:
