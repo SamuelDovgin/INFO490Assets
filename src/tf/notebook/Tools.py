@@ -160,8 +160,7 @@ class TestFramework(object):
         if verbose:
             # make result user friendly for display
             if e is None:
-                msg = json.loads(r)
-                score = msg.get('score', 0)
+                score = r.get('score', 0)
                 return "Score {:s}/{:d}".format(score, max_score)
             else:
                 return "ERROR: {:s}".format(str(e))
