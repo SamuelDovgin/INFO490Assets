@@ -5,15 +5,18 @@ import re
 print_regex  = re.compile(r'^\s*print\(')
 INDENT_REGEX = re.compile(r'^(\s*)[^\s]')
 scope0_function_call = re.compile(r'^[a-z_][a-z0-9_]*\(', re.IGNORECASE)
-
+# removing scope0 function calls may not be too useful
+# r = some_dumb_fn()
+# print(r)
+# unless you comment out print first
+# then do dead code elimination
 
 #
 # assumes src/tf is in the path
 #
 
-# TODO: comment out scope 0 function calls
-# TODO: parse out individual functions
-# BUT this is an issue if use external/helper functions
+# TODO: maybe: option to parse out individual functions
+# BUT this is an issue if use external or internal helper functions
 #
 
 class Nop(object):

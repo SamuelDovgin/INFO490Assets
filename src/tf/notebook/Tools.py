@@ -137,7 +137,10 @@ class TestFramework(object):
     def clean_notebook_for_download(self):
         self.write_file(as_is=False, remove_magic_cells=True)
         e, r = self.client.test_file(TestFramework.STUDENT_FILE, syntax_only=True)
-        return e is None, e
+        if e is None:
+            return True, TestFramework.STUDENT_FILE
+        else:
+            return False, e
 
     def test_notebook(self):
         self.write_file(as_is=False, remove_magic_cells=True)
