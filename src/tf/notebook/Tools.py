@@ -193,7 +193,7 @@ class TestFramework(object):
             output = widgets.Output()
 
             def on_button_clicked(input):
-                error, msg = self.test_function(fn)
+                error, msg = self.test_function(fn, verbose=False)
                 # print("Button clicked.", fn, input)
                 # Display the message within the output widget.
                 with output:
