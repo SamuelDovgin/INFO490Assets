@@ -171,12 +171,12 @@ class TestFramework(object):
 
         if verbose:
             if error is not None:
-                return "Error: {:s}".format(error)
+                error = "Error: {:s}".format(error)
+                msg = None
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
-                return "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
-        else:
-            return error, msg
+                msg = "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
+        return error, msg
 
     def test_with_button(self, fn):
 
@@ -195,18 +195,17 @@ class TestFramework(object):
 
             def on_button_clicked(input):
                 error, msg = self.test_function(fn)
-                score, max_score, msg = msg.split(':', maxsplit=2)
-
-                score = int(score)
-                max_score = int(max_score)
-
                 # print("Button clicked.", fn, input)
                 # Display the message within the output widget.
                 with output:
-
                     clear_output()  # also removes the button if put before output
                     print_warning = True
+
                     if error is None:
+                        score, max_score, msg = msg.split(':', maxsplit=2)
+                        score = int(score)
+                        max_score = int(max_score)
+
                         if msg.find('no tests') >= 0:
                             button.style = widgets.ButtonStyle(button_color='yellow')
                             button.description = 'No Tests'
