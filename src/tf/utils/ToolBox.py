@@ -35,7 +35,7 @@ def install_gd_file(doc_id, force=True, filename=None):
                 force = False
 
         if read_cache and not force:
-            logger.log("Reading cached version", filename)
+            logger.log("Reading cached version:", filename, ":")
             with open(filename, 'r') as fd:
                 return fd.read(), m_time, True
 
