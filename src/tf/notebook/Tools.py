@@ -180,12 +180,20 @@ class TestFramework(object):
         if verbose:
             # if it's verbose, just return a single string
             # to make for easy printing
+            warning = "If you change " + fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
             if error is not None:
-                warning = "If you change " + fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
                 return "Tested: {:s}\nError: {:s}\n{:s}".format(fn, error, warning)
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
-                return "Tested: {:s}\nScore: {:s}\nMax Score: {:s}\nOutput: {:s}".format(fn, score, max_score, msg)
+                try:
+                    score = int(score)
+                    max_score = int(max_score)
+                    if score == max_score:
+                        warning = ''
+                except Exception as e:
+                    self.logger.log('ERROR on verbose', e)
+
+                return "Tested: {:s}\nScore: {:d}\nMax Score: {:d}\nOutput: {:s}\n{:s}".format(fn, score, max_score, msg, warning)
 
         return error, msg
 
