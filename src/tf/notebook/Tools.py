@@ -178,13 +178,14 @@ class TestFramework(object):
         error, msg = self.client.test_function(filename, fn)
 
         if verbose:
+            warning = "If you change", fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
             # if it's verbose, just return a single string
             # to make for easy printing
             if error is not None:
-                return "Error: {:s}".format(error)
+                return "Error: {:s}\n{:s}".format(error, warning)
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
-                return "Score: {:s}\nMax Score: {:s}\nOutput: {:s}".format(score, max_score, msg)
+                return "Score: {:s}\nMax Score: {:s}\nOutput: {:s}\n{:s}".format(score, max_score, msg, warning)
 
         return error, msg
 
