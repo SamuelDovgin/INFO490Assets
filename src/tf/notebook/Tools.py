@@ -178,7 +178,7 @@ class TestFramework(object):
         error, msg = self.client.test_function(filename, fn)
 
         if verbose:
-            warning = "If you change", fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
+            warning = "If you change " + fn + ", SAVE the notebook (⌘/Ctrl s) before retesting"
             # if it's verbose, just return a single string
             # to make for easy printing
             if error is not None:
