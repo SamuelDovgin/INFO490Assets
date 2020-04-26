@@ -14,7 +14,7 @@ from tf.utils.SandBox import SandBox
 logger = SandBox().get_logger()
 
 
-def install_gd_file(doc_id, filename=None, cache_time=5):
+def install_gd_file(doc_id, filename=None, cache_time=1):
 
     n_time = time.time()
     if os.path.exists(filename):
@@ -28,7 +28,7 @@ def install_gd_file(doc_id, filename=None, cache_time=5):
             read_cache = True
 
         if read_cache:
-            if os.path.getsize(filename) > 10:
+            if os.path.getsize(filename) > 0:
                 logger.log("Reading cached version:", filename, ":")
                 with open(filename, 'r') as fd:
                     return fd.read(), m_time, True
