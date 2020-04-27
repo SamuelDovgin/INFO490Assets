@@ -62,6 +62,11 @@ tester.hello_world()
 
 '''
 
+# TODO:
+#  ColabTestFramework a subclass
+#  JupyterTestFramework a subclass
+#  ReplitTestFramework a subclass
+#  CliTestFramework a subclass
 
 class TestFramework(object):
 
