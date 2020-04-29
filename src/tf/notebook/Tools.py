@@ -165,7 +165,7 @@ class TestFramework(object):
         if verbose:
             # make result user friendly for display
             if e is None:
-                score = int(r.get('score', 0))
+                score = int(float(r.get('score', 0)))
                 return "Score {:d}/{:d}".format(score, max_score)
             else:
                 return "ERROR: {:s}".format(str(e))
@@ -191,8 +191,8 @@ class TestFramework(object):
             else:
                 score, max_score, msg = msg.split(':', maxsplit=2)
                 try:
-                    score = int(score)
-                    max_score = int(max_score)
+                    score = int(float(score))         # could be 0.0
+                    max_score = int(float(max_score))
                     if score == max_score:
                         warning = ''
                 except Exception as e:
