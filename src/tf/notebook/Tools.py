@@ -227,8 +227,8 @@ class TestFramework(object):
 
                     if error is None:
                         score, max_score, msg = msg.split(':', maxsplit=2)
-                        score = int(score)
-                        max_score = int(max_score)
+                        score = int(float(score))
+                        max_score = int(float(max_score))
 
                         if msg.find('no tests') >= 0:
                             button.style = widgets.ButtonStyle(button_color='yellow')
