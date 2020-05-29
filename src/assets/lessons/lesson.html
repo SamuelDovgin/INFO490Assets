@@ -1,5 +1,5 @@
 <html><head><style>
-/*** uncss> filename: http://localhost:3000/static/css/custom-tachyons.css ***/
+/*** uncss> filename: static/css/custom-tachyons.css ***/
 @charset "UTF-8";
 /* orginal file */
 /* ending ; is important */
@@ -54,10 +54,6 @@ body {
  * Correct the font size and margin on `h1` elements within `section` and
  * `article` contexts in Chrome, Firefox, and Safari.
  */
-h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-}
 
 /* Grouping content
    ========================================================================== */
@@ -212,7 +208,7 @@ img {
   BOX SIZING
 
 */
-html, body, div, section, h1 {
+html, body, div, section, h3 {
   box-sizing: border-box;
 }
 
@@ -770,6 +766,10 @@ body {
 */
 /* Width Scale */
 
+.w-100 {
+  width: 100%;
+}
+
 /*
 
     OVERFLOW
@@ -831,6 +831,10 @@ body {
 }
 
 /* Background colors */
+
+.bg-light-gray {
+  background-color: #eee;
+}
 
 /* 
 
@@ -958,6 +962,10 @@ body {
 
 */
 
+.tc {
+  text-align: center;
+}
+
 /*
 
    TEXT TRANSFORM
@@ -1010,8 +1018,8 @@ body {
 
 /* Type Scale */
 
-.f3 {
-  font-size: 1.5rem;
+.f4 {
+  font-size: 1.25rem;
 }
 
 /* Small and hard to read for many people so use with extreme caution */
@@ -1047,6 +1055,11 @@ body {
 
 */
 /* Equivalent to .overflow-y-scroll */
+
+.center {
+  margin-right: auto;
+  margin-left: auto;
+}
 
 /*
 
@@ -1287,6 +1300,11 @@ html, body {
 
 /* hack to hide the timeline in google charts */
 
+h3 {
+  margin-left: 1rem;
+  line-height: 1.5;
+}
+
 /*
 
 ISSUE
@@ -1328,12 +1346,17 @@ z-index: -1 on content makes anchors unselectable
 
 /*# sourceMappingURL=custom-tachyons.css.map */
  
-/*** uncss> filename: http://localhost:3000/static/css/lessons.css ***/
+/*** uncss> filename: static/css/lessons.css ***/
+.lesson-content {
+  font-family: Times;
+}
+
 .lesson-image {
   width: 200px;
 }
 
 /*# sourceMappingURL=lessons.css.map */
+
 </style><body>
-<div id="__next"><section class="lesson-content ml3"><div><div class="cf black"><h1>Coming Soon</h1><img class="lesson-image fl pr3 " src="https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/assets/images/dmap/topics/TextTripping.png"/><div class="pl3 f3 blue">This is the sequel to INFO 490 (Introduction to Programming for Data Science). Our focus will be on text analysis, machine learning, and of course advancing your Python knowledge. We have a lot of information to share and we hope you will enjoy learning how to move data though machines built using Python. Each lesson requires careful reading and understanding. Use Piazza to ask for help. You should tag your questions with LessonID (given below) This is the first lesson and its focus is on making sure you know how to set up the programming and testing environment properly.</div></div></div></section></div>
+<div id="__next"><section class="lesson-content ml3"><section class="black center"><div class="cf tc bg-light-gray w-100"><h3>TFIDF Lesson</h3></div></section><section><div><img class="lesson-image fl pr3 " src="https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/assets/images/dmap/topics/TextTripping.png"/><div class="pl3 f4 blue">This is the sequel to INFO 490 (Introduction to Programming for Data Science). Our focus will be on text analysis, machine learning, and of course advancing your Python knowledge. We have a lot of information to share and we hope you will enjoy learning how to move data though machines built using Python. Each lesson requires careful reading and understanding. Use Piazza to ask for help. You should tag your questions with LessonID (given below) This is the first lesson and its focus is on making sure you know how to set up the programming and testing environment properly.</div></div></section></section></div>
 </body></html>
