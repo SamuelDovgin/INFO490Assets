@@ -1,6 +1,16 @@
 import os
 import sys
 
+
+'''
+from dmap.lessons.tfidf.lib import Util
+text = Util.read_local_file('./info490/assets/src/dmap/lessons/tfidf/data/cith.txt')
+
+OR
+use the reader !!!
+
+'''
+
 #
 # TODO:  put in config file, fetch it
 #
@@ -11,22 +21,24 @@ lesson_map = {
         'parts': 4,
     }
 }
+
+
 def in_path(dir):
     for p in sys.path:
         if p.find("/src") >= 0:
             return True
     return False
 
+
 class AssetReader(object):
+
     def __init__(self, lesson_id):
 
         # set on install: /content/info490/assets
-        asset_dir = os.environ.get('ASSET_PATH', None)
-        assert asset_dir is not None, 'ASSET_PATH not set'
-
-        # make sure assets/src is in sys path
-        asset_dir += '/src/'
-        if not in_path(asset_dir):
+        fq = os.path.abspath(os.path.dirname(__file__))
+        asset_dir = os.path.dirname(fq)
+        assert asset_dir.find('/src') > 0, "bad asset path " + asset_dir
+        if asset_dir not in sys.path:
             sys.path.append(asset_dir)
 
         self.lesson_base = asset_dir + lesson_map['base'] + lesson_map[lesson_id].get('base', None)
@@ -34,6 +46,7 @@ class AssetReader(object):
             from IPython.display import display, clear_output
             self.player = display
         except ImportError:
+            print("IPython not installed")
             self.player = None
 
     # 'data/cith.txt'
@@ -43,15 +56,17 @@ class AssetReader(object):
             return fd.read()
 
     def view(self, page):
+
         page = str(page)
+        fq_path = "part{:s}.html".format(page)
+        text = self.read_local(fq_path)
+
         if self.player:
             import IPython
             from IPython.display import display, clear_output
-            fq_path = "part{:s}.html".format(page)
-            text = self.read_local(fq_path)
             display(IPython.display.HTML(text))
         else:
-            print('viewer not available')
+            print(text)
 
         # avoid printing anything out
         # way to suppress output on the return ??
