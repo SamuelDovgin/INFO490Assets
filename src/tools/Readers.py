@@ -14,7 +14,7 @@ use the reader !!!
 #
 # TODO:  put in config file, fetch it
 #
-lesson_map = {
+LESSON_MAP = {
     'base': '/dmap/lessons/',
     'DMP:TFIDF': {
         'base': 'tfidf',
@@ -41,9 +41,9 @@ class AssetReader(object):
         if asset_dir not in sys.path:
             sys.path.append(asset_dir)
 
-        base_dir = asset_dir + lesson_map.get('base', '')
-        if lesson_id in lesson_map:
-            lesson_base = lesson_map[lesson_id].get('base', '')
+        base_dir = asset_dir + LESSON_MAP.get('base', '')
+        if lesson_id in LESSON_MAP:
+            lesson_base = LESSON_MAP[lesson_id].get('base', '')
             print(lesson_base)
             self.lesson_base = base_dir + lesson_base
         else:

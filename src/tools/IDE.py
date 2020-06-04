@@ -2,7 +2,6 @@
 '''
 Local Install Notes:
 soft link to the DMAPTesting Framework
-
 '''
 
 ''' 
@@ -56,6 +55,7 @@ def install_colab_framework(lesson_id, notebook_id, reload=False):
 
         if reload:
             import importlib
+            print("reloading")
             importlib.reload(Tools)
             importlib.reload(Parser)
             importlib.reload(Client)
@@ -76,7 +76,7 @@ def install_colab_framework(lesson_id, notebook_id, reload=False):
 
 class ColabIDE(object):
 
-    def __init__(self, lesson_id, notebook_id, root='/content/info490'):
+    def __init__(self, lesson_id, notebook_id, root='/content/info490', reload=False):
         if root is None:
             # grab from env
             root = os.environ.get('ROOT_PATH', None)
@@ -95,7 +95,5 @@ class ColabIDE(object):
         self.asset_path = asset_path
         self.test_path = test_path
 
-        self.tester, self.reader = install_colab_framework(lesson_id, notebook_id)
-
-
+        self.tester, self.reader = install_colab_framework(lesson_id, notebook_id, reload)
 
