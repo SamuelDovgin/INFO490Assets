@@ -19,7 +19,7 @@ lesson_map = {
     'DMP:TFIDF': {
         'base': 'tfidf',
         'parts': 4,
-    }
+    },
 }
 
 
@@ -41,7 +41,14 @@ class AssetReader(object):
         if asset_dir not in sys.path:
             sys.path.append(asset_dir)
 
-        self.lesson_base = asset_dir + lesson_map['base'] + lesson_map[lesson_id].get('base', None)
+        base_dir = asset_dir + lesson_map.get('base', '')
+        if lesson_id in lesson_map:
+            lesson_base = lesson_map[lesson_id].get('base', '')
+            print(lesson_base)
+            self.lesson_base = base_dir + lesson_base
+        else:
+            self.lesson_base = base_dir
+
         try:
             from IPython.display import display, clear_output
             self.player = display
