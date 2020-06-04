@@ -11,14 +11,23 @@ lesson_map = {
         'parts': 4,
     }
 }
+def in_path(dir):
+    for p in sys.path:
+        if p.find("/src") >= 0:
+            return True
+    return False
 
 class AssetReader(object):
     def __init__(self, lesson_id):
 
+        # set on install: /content/info490/assets
         asset_dir = os.environ.get('ASSET_PATH', None)
-
         assert asset_dir is not None, 'ASSET_PATH not set'
-        assert asset_dir.find("/src") >= 0, "bad path, no /src"
+
+        # make sure assets/src is in sys path
+        p1 = "{:s}/{:s}".format(asset_dir, '/src/')
+        if not in_path(p1):
+            sys.path.append(p1)
 
         # from data.lib import Util
         p1 = "{:s}/dmap/".format(asset_dir)
