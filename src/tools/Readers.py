@@ -5,7 +5,7 @@ import sys
 # TODO:  put in config file, fetch it
 #
 lesson_map = {
-    'base': '/src/dmap/lessons/',
+    'base': '/dmap/lessons/',
     'DMP:TFIDF': {
         'base': 'tfidf',
         'parts': 4,
@@ -14,8 +14,11 @@ lesson_map = {
 
 class AssetReader(object):
     def __init__(self, lesson_id):
+
         asset_dir = os.environ.get('ASSET_PATH', None)
+
         assert asset_dir is not None, 'ASSET_PATH not set'
+        assert asset_dir.find("/src") >= 0, "bad path, no /src"
 
         # from data.lib import Util
         p1 = "{:s}/dmap/".format(asset_dir)
