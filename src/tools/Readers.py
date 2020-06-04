@@ -24,7 +24,7 @@ class AssetReader(object):
         p1 = "{:s}/dmap/".format(asset_dir)
         sys.path.append(p1)
 
-        self.base = asset_dir + lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
+        self.lesson_base = asset_dir + lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
         try:
             from IPython.display import display, clear_output
             self.player = display
@@ -33,15 +33,16 @@ class AssetReader(object):
 
     # 'data/cith.txt'
     def read_local(self, filename):
-        fn = "{:s}/{:s}".format(self.base, filename)
+        fn = "{:s}/{:s}".format(self.lesson_base, filename)
         with open(fn, 'r') as fd:
             return fd.read()
 
     def view(self, page):
+        page = str(page)
         if self.player:
             import IPython
             from IPython.display import display, clear_output
-            fq_path = "part{:d}.html".format(self.base, page)
+            fq_path = "{:s}/part{:s}.html".format(self.lesson_base, page)
             text = self.read_local(fq_path)
             display(IPython.display.HTML(text))
         else:
