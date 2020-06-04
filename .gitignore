@@ -1,10 +1,7 @@
 .idea/
 *.zip
 *.pxm
-debug_log.txt
-solution.json
-solution.py
-
+sandbox_tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

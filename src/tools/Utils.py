@@ -2,9 +2,6 @@ import requests
 import urllib
 
 
-
-
-
 def build_google_drive_url(doc_id):
     DRIVE1 = "https://docs.google.com/uc"
     DRIVE2 = "https://drive.google.com/uc"
@@ -23,7 +20,8 @@ def read_remote(url):
         response.encoding = 'utf-8'
         if response.status_code == requests.codes.ok: # that is 200
             return response.text
-    return None
+        else:
+            return '404:' + url
 
 
 def read_remote1(url):
@@ -32,5 +30,5 @@ def read_remote1(url):
     response.encoding = 'utf-8'
     if response.status_code == requests.codes.ok:  # that is 200
         return response.text
-    return None
+    return "Error:" + response.status_code
 
