@@ -25,15 +25,11 @@ class AssetReader(object):
         assert asset_dir is not None, 'ASSET_PATH not set'
 
         # make sure assets/src is in sys path
-        p1 = "{:s}/{:s}".format(asset_dir, '/src/')
-        if not in_path(p1):
-            sys.path.append(p1)
+        asset_dir += '/src/'
+        if not in_path(asset_dir):
+            sys.path.append(asset_dir)
 
-        # from data.lib import Util
-        p1 = "{:s}/dmap/".format(asset_dir)
-        sys.path.append(p1)
-
-        self.lesson_base = asset_dir + lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
+        self.lesson_base = asset_dir + lesson_map['base'] + lesson_map[lesson_id].get('base', None)
         try:
             from IPython.display import display, clear_output
             self.player = display
