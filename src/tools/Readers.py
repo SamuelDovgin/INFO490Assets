@@ -51,7 +51,7 @@ class AssetReader(object):
         if self.player:
             import IPython
             from IPython.display import display, clear_output
-            fq_path = "{:s}/part{:s}.html".format(self.lesson_base, page)
+            fq_path = "part{:s}.html".format(page)
             text = self.read_local(fq_path)
             display(IPython.display.HTML(text))
         else:
