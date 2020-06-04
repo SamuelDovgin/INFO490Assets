@@ -17,7 +17,7 @@ class AssetReader(object):
         asset_dir = os.environ.get('ASSET_PATH', None)
         assert asset_dir is not None, 'ASSET_PATH not set'
 
-        from data.lib import Util
+        # from data.lib import Util
         p1 = "{:s}/dmap/".format(asset_dir)
         sys.path.append(p1)
 
@@ -47,7 +47,6 @@ class AssetReader(object):
         # avoid printing anything out
         # way to suppress output on the return ??
         return None
-
 
 
 '''
