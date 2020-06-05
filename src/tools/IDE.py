@@ -6,28 +6,38 @@ soft link to the DMAPTesting Framework
 
 ''' 
 COLAB INSTALL
-def install_info490_repo():
-  import os
-  import sys
-  INSTALL_PATH = '/content/info490' # keep as is
-  if not os.path.exists(INSTALL_PATH):
-    os.mkdir(INSTALL_PATH)
-  !git clone https://github.com/NSF-EC/INFO490Assets.git info490/INFO490Assets
-  !git clone https://github.com/habermanUIUC/DMAPTester.git info490/DMAPTester
-  #if you need to do a pull (rare, unless instructed to) uncomment the following
-  #!cd info490/INFO490Assets; git pull; cd .. 
-  #!cd info490/DMAPTester; git pull; cd ..
-  
-  ASSET_PATH = "{:s}/{:s}".format(INSTALL_PATH, "INFO490Assets/src")
-  if ASSET_PATH not in sys.path:
-    sys.path.append(ASSET_PATH)
-  from tools import IDE
-  return IDE.ColabIDE(LESSON_ID, NOTEBOOK_ID)
 
-ide = install_info490_repo()
-tester = ide.tester
-reader = ide.reader
-tester.hello_world()
+def install_info490_repo(reload=False):
+  try:
+    import os, sys
+    INSTALL_PATH = '/content/info490' # keep as is
+    if not os.path.exists(INSTALL_PATH):
+      os.mkdir(INSTALL_PATH)
+    !git clone https://github.com/NSF-EC/INFO490Assets.git info490/INFO490Assets
+    !git clone https://github.com/habermanUIUC/DMAPTester.git info490/DMAPTester
+    if reload:
+      !cd info490/INFO490Assets; git pull; cd .. 
+      !cd info490/DMAPTester; git pull; cd .. 
+    
+    ASSET_PATH = "{:s}/{:s}".format(INSTALL_PATH, "INFO490Assets/src")
+    if ASSET_PATH not in sys.path:
+      sys.path.append(ASSET_PATH)
+    from tools import IDE
+    if reload:
+      import importlib
+      importlib.reload(IDE)
+    return IDE.ColabIDE(LESSON_ID, NOTEBOOK_ID, reload=reload)
+  except Exception as e:
+    class Nop(object):
+        def __init__(self, e): self.e = e
+        def nop(self, *args, **kw): return("unable to test:" + self.e, None)
+        def __getattr__(self, _): return self.nop 
+    class IDE():
+      tester=Nop(str(e))
+      reader=Nop(str(e))
+    return IDE()
+
+ide = install_info490_repo(True)
 '''
 
 import os
@@ -73,6 +83,14 @@ def install_colab_framework(lesson_id, notebook_id, reload=False):
     except ImportError as e:
         return Nop(str(e)), Nop(str(e))
 
+# def build_IDE(install_path):
+#     try:
+#         import IPython
+#     except
+# import os
+# p = 'git clone https://github.com/habermanUIUC/DMAPTester.git info490/DMAPTester'
+# os.system(p)
+
 
 class ColabIDE(object):
 
@@ -96,6 +114,10 @@ class ColabIDE(object):
         self.test_path = test_path
 
         self.tester, self.reader = install_colab_framework(lesson_id, notebook_id, reload)
+        if isinstance(self.tester, Nop):
+            print("install did not work", self.tester.hello())
+        else:
+            print("IDE ready")
 
 
 
