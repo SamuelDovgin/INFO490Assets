@@ -128,7 +128,7 @@ class BootStrap(object):
         #install_path = os.path.dirname(fq)
 
         install_path = os.getcwd()
-        print(install_path)
+        print("files located in", install_path)
 
         if not os.path.exists(INSTALL_DIR):
             os.mkdir(INSTALL_DIR)
@@ -163,7 +163,7 @@ class BootStrap(object):
             def __init__(self, t, r):
                 self.tester = t
                 self.reader = r
-        return IDE(a,b)
+        return IDE(a, b)
 
 if __name__ == '__main__':
     NOTEBOOK_ID = '1GDCmobYye_kk28N35oK8i_BZdSSTyFsT'  # change me!!

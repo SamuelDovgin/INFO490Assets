@@ -48,7 +48,6 @@ class AssetReader(object):
         base_dir = asset_dir + LESSON_MAP.get('base', '')
         if lesson_id in LESSON_MAP:
             lesson_base = LESSON_MAP[lesson_id].get('base', '')
-            print(lesson_base)
             self.lesson_base = base_dir + lesson_base
         else:
             self.lesson_base = base_dir
