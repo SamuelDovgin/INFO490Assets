@@ -4,6 +4,35 @@ Local Install Notes:
 soft link to the DMAPTesting Framework
 '''
 
+'''
+OLD
+def install_info490_repo():
+  import os
+  import sys
+  INSTALL_PATH = '/content/info490' # keep as is
+  if not os.path.exists(INSTALL_PATH):
+    os.mkdir(INSTALL_PATH)
+  #!git clone https://github.com/NSF-EC/INFO490Assets.git info490/INFO490Assets
+  #!git clone https://github.com/habermanUIUC/DMAPTester.git info490/DMAPTester
+  #if you need to do a pull (rare, unless instructed to) uncomment the following
+  #!cd info490/INFO490Assets; git pull; cd .. 
+  #!cd info490/DMAPTester; git pull; cd ..
+  
+  ASSET_PATH = "{:s}/{:s}".format(INSTALL_PATH, "INFO490Assets/src")
+  if ASSET_PATH not in sys.path:
+    sys.path.append(ASSET_PATH)
+ 
+  from tools import IDE
+  import importlib
+  importlib.reload(IDE)
+  return IDE.ColabIDE(LESSON_ID, NOTEBOOK_ID, reload=True)
+
+ide = install_info490_repo()
+tester = ide.tester
+reader = ide.reader
+
+
+'''
 ''' 
 COLAB INSTALL
 
