@@ -16,7 +16,11 @@ use the reader !!!
 #
 LESSON_MAP = {
     'base': '/dmap/lessons/',
-    'DMP:TFIDF': {
+    'DMAP:INTRO': {
+        'base': 'intro',
+        'parts': 0,
+    },
+    'DMAP:TFIDF': {
         'base': 'tfidf',
         'parts': 4,
     },
@@ -64,9 +68,12 @@ class AssetReader(object):
 
     def view(self, page):
 
-        page = str(page)
-        fq_path = "part{:s}.html".format(page)
-        text = self.read_local(fq_path)
+        try:
+            page = str(page)
+            fq_path = "part{:s}.html".format(page)
+            text = self.read_local(fq_path)
+        except FileNotFoundError:
+            text = "File Not Found: " + fq_path
 
         if self.player:
             import IPython

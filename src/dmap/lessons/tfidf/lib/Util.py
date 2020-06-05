@@ -6,10 +6,6 @@
 import re
 
 
-def read_local_file(filename):
-    with open(filename, 'r') as fd:
-        return fd.read()
-
 
 '''
 the following regular expression tokenize's the text: 
