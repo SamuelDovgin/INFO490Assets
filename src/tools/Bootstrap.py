@@ -91,6 +91,7 @@ class Nop_ONE(object):
     def __getattr__(self, _):
         return self.nop
 
+# TODO:  add Bootstrap noOp class in each of the Tests ??
 
 def install_colab_framework(lesson_id, notebook_id, reload=False):
     try:
@@ -145,9 +146,9 @@ class BootStrap(object):
             os.system(cmd)
         else:
             print("reloading git repos")
-            cmd = "cd {:s} ; git pull".format(asset_dir)
+            cmd = "cd {:s}; git pull".format(asset_dir)
             os.system(cmd)
-            cmd = "cd {:s} ; git pull".format(test_dir)
+            cmd = "cd {:s}; git pull".format(test_dir)
             os.system(cmd)
 
         src_path = "{:s}/{:s}".format(asset_dir, "src")
