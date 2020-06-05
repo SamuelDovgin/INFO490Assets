@@ -71,10 +71,57 @@ TEST_REPO  = "https://github.com/habermanUIUC/DMAPTester.git"
 ASSET_DST = "INFO490Assets"
 TEST_DST = "DMAPTester"
 
+'''
+HACK: fix the DMAPTester so it returns 
+only 1 value for all functions
+'''
+class Nop_TWO(object):
+    def __init__(self, e):
+        self.e = e
+    def nop(self, *args, **kw):
+        return "unable to test:" + self.e, None
+    def __getattr__(self, _):
+        return self.nop
+
+class Nop_ONE(object):
+    def __init__(self, e):
+        self.e = e
+    def nop(self, *args, **kw):
+        return "unable to test:" + self.e
+    def __getattr__(self, _):
+        return self.nop
+
+
+def install_colab_framework(lesson_id, notebook_id, reload=False):
+    try:
+        from tf.notebook import Tools, Parser
+        from tf.utils import Client
+        from tools import Readers
+        from tools import Utils
+
+        if reload:
+            import importlib
+            print("reloading")
+            importlib.reload(Tools)
+            importlib.reload(Parser)
+            importlib.reload(Client)
+            importlib.reload(Readers)
+
+        # pre test
+        #url = Utils.build_google_drive_url(notebook_id)
+        #text = Utils.read_remote1(url)
+
+        ide = Tools.TestFramework(lesson_id, notebook_id)
+        reader = Readers.AssetReader(lesson_id)
+
+        return ide, reader
+
+    except ImportError as e:
+        return Nop(str(e)), Nop(str(e))
 
 class BootStrap(object):
 
-    def __init__(self,):
+    def __init__(self):
 
         # won't work if BootStrap is softlinked
         #fq = os.path.abspath(os.path.dirname(__file__))
@@ -103,14 +150,24 @@ class BootStrap(object):
             cmd = "cd {:s} ; git pull".format(test_dir)
             os.system(cmd)
 
-        SRC_PATH = "{:s}/{:s}".format(asset_dir, "src")
-        if SRC_PATH not in sys.path:
-            sys.path.append(SRC_PATH)
+        src_path = "{:s}/{:s}".format(asset_dir, "src")
+        if src_path not in sys.path:
+            sys.path.append(src_path)
+        src_path = "{:s}/{:s}".format(test_dir, "src")
+        if src_path not in sys.path:
+            sys.path.append(src_path)
 
+    def create_ide(self, lesson_id, nb_id, reload=False):
+        a, b = install_colab_framework(lesson_id, nb_id, reload=reload)
+        class IDE(object):
+            def __init__(self, t, r):
+                self.tester = t
+                self.reader = r
+        return IDE(a,b)
 
 if __name__ == '__main__':
+    NOTEBOOK_ID = '1GDCmobYye_kk28N35oK8i_BZdSSTyFsT'  # change me!!
+    LESSON_ID = 'DMAP:INTRO'  # keep this as is
     boot = BootStrap()
-    from tools import IDE
+    ide = boot.create_ide(LESSON_ID, NOTEBOOK_ID)
     print('YES')
-
-
