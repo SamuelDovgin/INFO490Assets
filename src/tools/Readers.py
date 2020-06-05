@@ -61,8 +61,8 @@ class AssetReader(object):
             self.player = None
 
     # 'data/cith.txt'
-    def read_local(self, filename):
-        fn = "{:s}/{:s}".format(self.lesson_base, filename)
+    def read_data_file(self, filename):
+        fn = "{:s}/data/{:s}".format(self.lesson_base, filename)
         with open(fn, 'r') as fd:
             return fd.read()
 
