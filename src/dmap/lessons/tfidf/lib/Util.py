@@ -5,8 +5,6 @@
 
 import re
 
-
-
 '''
 the following regular expression tokenize's the text: 
 ['A-Za-z0-9]+-?['A-Za-z0-9]+ 
@@ -44,7 +42,7 @@ def split_into_chapters(data):
     pattern = r'^CHAPTER\s[A-Z\s]+\.?$'
     # pattern = r'CHAPTER\s[A-Z\s]+'
     regex = re.compile(pattern, re.M)
-    return [d.trim() in regex.split(data) if len(data.trim()) > 0]
+    return [d.trim() for d in regex.split(data) if len(data.trim()) > 0]
     #return regex.split(data)
 
 

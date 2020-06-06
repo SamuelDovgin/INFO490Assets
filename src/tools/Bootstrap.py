@@ -102,11 +102,3 @@ class BootStrap(object):
                 self.reader = r
         return IDE(a, b)
 
-if __name__ == '__main__':
-    NOTEBOOK_ID = '1GDCmobYye_kk28N35oK8i_BZdSSTyFsT'  # change me!!
-    LESSON_ID = 'DMAP:INTRO'  # keep this as is
-    boot = BootStrap()
-    ide = boot.create_ide(LESSON_ID, NOTEBOOK_ID)
-    import dmap.lessons.intro.lib.Util
-
-    print('YES')
