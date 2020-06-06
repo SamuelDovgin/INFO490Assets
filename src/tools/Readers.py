@@ -79,7 +79,7 @@ class AssetReader(object):
 
         try:
             page = str(page)
-            fq_path = "part{:s}.html".format(page)
+            fq_path = "html/part{:s}.html".format(page)
             text = self.read_local(fq_path)
         except FileNotFoundError:
             text = "File Not Found: " + fq_path
