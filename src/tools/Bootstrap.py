@@ -107,4 +107,6 @@ if __name__ == '__main__':
     LESSON_ID = 'DMAP:INTRO'  # keep this as is
     boot = BootStrap()
     ide = boot.create_ide(LESSON_ID, NOTEBOOK_ID)
+    import dmap.lessons.intro.lib.Util
+
     print('YES')

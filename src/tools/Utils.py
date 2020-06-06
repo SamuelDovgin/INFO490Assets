@@ -3,11 +3,15 @@ import urllib
 import os
 
 
+
+#
+# bad idea, will not work in the grader
+# use Readers
+#
 def read_local_file(filename):
     # better to use the IDE reader
     with open(filename, 'r') as fd:
         return fd.read()
-
 
 # could split the lesson tag into dir, lesson dir;
 # def read_data_file(lesson, filename):
