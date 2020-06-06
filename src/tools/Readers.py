@@ -52,10 +52,11 @@ class AssetReader(object):
         else:
             self.lesson_base = base_dir
 
+        # allow imports of lib
+        # these files MUST be available on test framework too
         lib_dir = "{:s}/lib".format(self.lesson_base)
         if lib_dir not in sys.path:
             sys.path.append(lib_dir)
-            print(sys.path)
 
         try:
             from IPython.display import display, clear_output
