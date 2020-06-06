@@ -44,7 +44,8 @@ def split_into_chapters(data):
     pattern = r'^CHAPTER\s[A-Z\s]+\.?$'
     # pattern = r'CHAPTER\s[A-Z\s]+'
     regex = re.compile(pattern, re.M)
-    return regex.split(data)
+    return [d.trim() in regex.split(data) if len(data.trim()) > 0]
+    #return regex.split(data)
 
 
 '''
