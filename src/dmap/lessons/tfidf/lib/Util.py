@@ -42,7 +42,7 @@ def split_into_chapters(data):
     pattern = r'^CHAPTER\s[A-Z\s]+\.?$'
     # pattern = r'CHAPTER\s[A-Z\s]+'
     regex = re.compile(pattern, re.M)
-    return [d.trim() for d in regex.split(data) if len(data.trim()) > 0]
+    return [d.strip() for d in regex.split(data) if len(data.strip()) > 0]
     #return regex.split(data)
 
 
