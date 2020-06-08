@@ -34,9 +34,15 @@ def in_path(dir):
     return False
 
 
+
+
 class AssetReader(object):
 
     def __init__(self, lesson_id):
+
+        url = '"https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(lesson_id)
+        url += '/html/section{page:d}.html"'
+        self.url = url
 
         # set on install: /content/info490/assets
         fq = os.path.abspath(os.path.dirname(__file__))
@@ -75,14 +81,23 @@ class AssetReader(object):
         with open(fn, 'r') as fd:
             return fd.read()
 
-    def view_section(self, section):
+    def view_section(self, section, remote=False):
 
-        try:
-            page = str(section)
-            fq_path = "html/section{:s}.html".format(page)
-            text = self.read_local(fq_path)
-        except FileNotFoundError:
-            text = "File Not Found: " + fq_path
+        if remote:
+            try:
+                import requests
+                url = self.url.format(section)
+                text = requests.get(url).text
+            except Exception as e:
+                print("Unable to get", url)
+                print(e)
+        else:
+            try:
+                page = str(section)
+                fq_path = "html/section{:s}.html".format(page)
+                text = self.read_local(fq_path)
+            except FileNotFoundError:
+                text = "File Not Found: " + fq_path
 
         if self.player:
             import IPython
