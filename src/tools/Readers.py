@@ -91,7 +91,13 @@ class AssetReader(object):
             try:
                 import requests
                 url = "{:s}/section{section:d}.html".format(self.url, section=section)
-                text = requests.get(url).text
+                r = requests.get(url)
+                r.encoding = 'utf-8'
+                if r.status_code == requests.codes.ok:
+                    text = r.text
+                else:
+                    text = "Error on fetch:" + str(r.status_code)
+                    text += "\n" + url
             except Exception as e:
                 text = "Unable to get" + url
                 text += "\n"+str(e)
