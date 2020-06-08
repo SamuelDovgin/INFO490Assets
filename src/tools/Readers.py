@@ -93,8 +93,8 @@ class AssetReader(object):
                 url = self.url.format(section=section)
                 text = requests.get(url).text
             except Exception as e:
-                print("Unable to get", url)
-                print(e)
+                text = "Unable to get" + url
+                text += "\n"+str(e)
         else:
             try:
                 page = str(section)
