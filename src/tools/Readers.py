@@ -40,11 +40,11 @@ class AssetReader(object):
     def __init__(self, lesson_id):
 
         parts = lesson_id.split(':', 2)
-        classroom = parts[0] # DMAP
-        tag = parts[1]  # tfidf
-        url = 'http://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(tag)
-        url += '/html/section{section:d}.html'
-        self.url = url
+        classroom = parts[0]  # DMAP
+        tag = parts[1]        # tfidf
+
+        # root for remote fetching
+        self.url = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(tag)
 
         # set on install: /content/info490/assets
         fq = os.path.abspath(os.path.dirname(__file__))
@@ -90,7 +90,7 @@ class AssetReader(object):
         if remote:
             try:
                 import requests
-                url = self.url.format(section=section)
+                url = "{:s}/section{section:d}.html".format(self.url, section=section)
                 text = requests.get(url).text
             except Exception as e:
                 text = "Unable to get" + url
