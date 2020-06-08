@@ -90,7 +90,7 @@ class AssetReader(object):
         if remote:
             try:
                 import requests
-                url = "{:s}/section{section:d}.html".format(self.url, section=section)
+                url = "{:s}/html/section{section:d}.html".format(self.url, section=section)
                 r = requests.get(url)
                 r.encoding = 'utf-8'
                 if r.status_code == requests.codes.ok:
