@@ -15,14 +15,15 @@ use the reader !!!
 # TODO:  put in config file, fetch it
 #
 LESSON_MAP = {
-    'base': '/dmap/lessons/',
+    'base': '/dmap/lessons/',  # ending slash is important
     'DMAP:INTRO': {
         'base': 'intro',
-        'parts': 0,
+    },
+    'DMAP:dictorder': {
+        'base': 'dictorder',
     },
     'DMAP:TFIDF': {
         'base': 'tfidf',
-        'parts': 4,
     },
 }
 
@@ -38,7 +39,10 @@ class AssetReader(object):
 
     def __init__(self, lesson_id):
 
-        url = '"https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(lesson_id)
+        parts = lesson_id.split(':', 2)
+        classroom = parts[0] # DMAP
+        tag = parts[1]  # tfidf
+        url = '"https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(tag)
         url += '/html/section{section:d}.html"'
         self.url = url
 
@@ -49,12 +53,14 @@ class AssetReader(object):
         if asset_dir not in sys.path:
             sys.path.append(asset_dir)
 
-        base_dir = asset_dir + LESSON_MAP.get('base', '')
+        base_dir = asset_dir + LESSON_MAP.get('base', None)
+        assert base_dir is not None, "bad Reader config"
+
         if lesson_id in LESSON_MAP:
-            lesson_base = LESSON_MAP[lesson_id].get('base', '')
+            lesson_base = LESSON_MAP[lesson_id].get('base', tag)
             self.lesson_base = base_dir + lesson_base
         else:
-            self.lesson_base = base_dir
+            self.lesson_base = base_dir + tag
 
         # allow imports of lib
         # these files MUST be available on test framework too
@@ -123,7 +129,6 @@ lesson_map_URL = {
     'base': 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/',
     'DMP:TFIDF' : {
         'base': 'tfidf',
-        'parts': 4,
     }
 }
 class HtmlReader(object):

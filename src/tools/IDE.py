@@ -47,7 +47,7 @@ def install_colab_framework(lesson_id, notebook_id, reload=False):
         return ide, reader
 
     except ImportError as e:
-        return Nop(str(e)), Nop(str(e))
+        return Nop(str(e)), Readers.AssetReader(lesson_id)
 
 # def build_IDE(install_path):
 #     try:
