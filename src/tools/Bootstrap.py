@@ -38,7 +38,7 @@ def install_colab_framework(lesson_id, notebook_id, reload=False):
 
         if reload:
             import importlib
-            print("reloading")
+            print("reloading classes")
             importlib.reload(Tools)
             importlib.reload(Parser)
             importlib.reload(Client)
