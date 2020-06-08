@@ -42,8 +42,8 @@ class AssetReader(object):
         parts = lesson_id.split(':', 2)
         classroom = parts[0] # DMAP
         tag = parts[1]  # tfidf
-        url = '"http://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(tag)
-        url += '/html/section{section:d}.html"'
+        url = 'http://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(tag)
+        url += '/html/section{section:d}.html'
         self.url = url
 
         # set on install: /content/info490/assets
