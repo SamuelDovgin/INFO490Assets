@@ -34,14 +34,12 @@ def in_path(dir):
     return False
 
 
-
-
 class AssetReader(object):
 
     def __init__(self, lesson_id):
 
         url = '"https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(lesson_id)
-        url += '/html/section{page:d}.html"'
+        url += '/html/section{section:d}.html"'
         self.url = url
 
         # set on install: /content/info490/assets
@@ -86,7 +84,7 @@ class AssetReader(object):
         if remote:
             try:
                 import requests
-                url = self.url.format(section)
+                url = self.url.format(section=section)
                 text = requests.get(url).text
             except Exception as e:
                 print("Unable to get", url)
