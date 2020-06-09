@@ -112,8 +112,10 @@ class AssetReader(object):
         if self.player:
             import IPython
             from IPython.display import display, clear_output
+            print(len(text))
             display(IPython.display.HTML(text))
         else:
+            print(len(text))
             print(text)
 
         # avoid printing anything out
@@ -126,5 +128,5 @@ if __name__ == "__main__":
    print('yes')
    tag = 'DMAP:dictorder'
    reader = AssetReader(tag)
-   print(reader.view_section(1, remote=True))
-   print(reader.view_section(1, remote=False))
+   #print(reader.view_section(1, remote=True))
+   #print(reader.view_section(1, remote=False))
