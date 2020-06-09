@@ -1,26 +1,20 @@
 import os
 import sys
 
-
 '''
 from dmap.lessons.tfidf.lib import Util
 text = Util.read_local_file('./info490/assets/src/dmap/lessons/tfidf/data/cith.txt')
-
 OR
 use the reader !!!
-
 '''
 
 #
 # TODO:  put in config file, fetch it
 #
 LESSON_MAP = {
-    'base': '/dmap/lessons/',  # ending slash is important
+    'base': '/dmap/lessons',
     'DMAP:INTRO': {
         'base': 'intro',
-    },
-    'DMAP:dictorder': {
-        'base': 'dictorder',
     },
     'DMAP:TFIDF': {
         'base': 'tfidf',
@@ -43,9 +37,13 @@ class AssetReader(object):
         classroom = parts[0]  # DMAP
         tag = parts[1]        # tfidf
 
-        # root for remote fetching
-        self.url = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/{:s}'.format(tag)
+        base_path = LESSON_MAP.get('base', None)
+        assert base_path is not None, "bad Reader config"
 
+        self.url = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/{base:s}/{tag:s}'.format(base=base_path, tag=tag)
+        print('URL Assets', self.url)
+
+        # root for remote fetching
         # set on install: /content/info490/assets
         fq = os.path.abspath(os.path.dirname(__file__))
         asset_dir = os.path.dirname(fq)
@@ -53,14 +51,14 @@ class AssetReader(object):
         if asset_dir not in sys.path:
             sys.path.append(asset_dir)
 
-        base_dir = asset_dir + LESSON_MAP.get('base', None)
-        assert base_dir is not None, "bad Reader config"
-
+        base_dir = asset_dir + base_path
         if lesson_id in LESSON_MAP:
             lesson_base = LESSON_MAP[lesson_id].get('base', tag)
-            self.lesson_base = base_dir + lesson_base
         else:
-            self.lesson_base = base_dir + tag
+            lesson_base = tag
+
+        self.lesson_base = "{:s}/{:s}".format(base_dir, lesson_base)
+        print('File Assets', self.lesson_base)
 
         # allow imports of lib
         # these files MUST be available on test framework too
@@ -86,11 +84,11 @@ class AssetReader(object):
             return fd.read()
 
     def view_section(self, section, remote=False):
-
+        section = str(section)
         if remote:
+            url = "{:s}/html/section{section:s}.html".format(self.url, section=section)
             try:
                 import requests
-                url = "{:s}/html/section{section:d}.html".format(self.url, section=section)
                 r = requests.get(url)
                 r.encoding = 'utf-8'
                 if r.status_code == requests.codes.ok:
@@ -105,8 +103,7 @@ class AssetReader(object):
                 print(text)
         else:
             try:
-                page = str(section)
-                fq_path = "html/section{:s}.html".format(page)
+                fq_path = "html/section{:s}.html".format(section)
                 text = self.read_local(fq_path)
             except FileNotFoundError:
                 text = "File Not Found: " + fq_path
@@ -124,42 +121,10 @@ class AssetReader(object):
         return None
 
 
-'''
-https://colab.research.google.com/drive/1Np-Si3PLn32v48QreAVEDVPX1S4MH81u#offline=false&sandboxMode=tru
+if __name__ == "__main__":
 
-
-import IPython, requests
-LESSON_URL = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/tfidf'
-res = requests.get('{:s}/part0.html'.format(LESSON_URL));
-display(IPython.display.HTML(res.text))
-
-
-lesson_map_URL = {
-    'base': 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/dmap/lessons/',
-    'DMP:TFIDF' : {
-        'base': 'tfidf',
-    }
-}
-class HtmlReader(object):
-    def __init__(self, lesson_id):
-        self.base = lesson_map.get('base') + lesson_map[lesson_id].get('base', 'na')
-        try:
-            from IPython.display import display, clear_output
-            self.player = display
-        except ImportError:
-            self.player = None
-
-    def _fetch(self, url):
-        return requests.get(url).text
-
-    def view(self, page):
-        url = "{:s}/part{:d}.html".format(self.base, page)
-        if self.player:
-            import IPython
-            from IPython.display import display, clear_output
-            text = self._fetch(url)
-            display(IPython.display.HTML(text))
-        else:
-            print('viewer not available')
-        return ''
-'''
+   print('yes')
+   tag = 'DMAP:dictorder'
+   reader = AssetReader(tag)
+   print(reader.view_section(1, remote=True))
+   print(reader.view_section(1, remote=False))
