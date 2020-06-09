@@ -112,11 +112,13 @@ class AssetReader(object):
         if self.player:
             import IPython
             from IPython.display import display, clear_output
-            print(len(text))
+            print('nb', len(text))
             display(IPython.display.HTML(text))
+            return text
         else:
-            print(len(text))
+            print('txt', len(text))
             print(text)
+            return text
 
         # avoid printing anything out
         # way to suppress output on the return ??
