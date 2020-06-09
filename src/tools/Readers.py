@@ -98,9 +98,11 @@ class AssetReader(object):
                 else:
                     text = "Error on fetch:" + str(r.status_code)
                     text += "\n" + url
+                    print(text)
             except Exception as e:
                 text = "Unable to get" + url
                 text += "\n"+str(e)
+                print(text)
         else:
             try:
                 page = str(section)
@@ -108,6 +110,7 @@ class AssetReader(object):
                 text = self.read_local(fq_path)
             except FileNotFoundError:
                 text = "File Not Found: " + fq_path
+                print(text)
 
         if self.player:
             import IPython
