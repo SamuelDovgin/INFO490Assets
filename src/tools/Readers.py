@@ -31,8 +31,9 @@ def in_path(dir):
 
 class AssetReader(object):
 
-    def __init__(self, lesson_id):
+    def __init__(self, lesson_id, debug=False):
 
+        self.debug = debug
         parts = lesson_id.split(':', 2)
         classroom = parts[0]  # DMAP
         tag = parts[1]        # tfidf
@@ -41,7 +42,8 @@ class AssetReader(object):
         assert base_path is not None, "bad Reader config"
 
         self.url = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/{base:s}/{tag:s}'.format(base=base_path, tag=tag)
-        print('URL Assets', self.url)
+        if debug:
+            print('URL Assets', self.url)
 
         # root for remote fetching
         # set on install: /content/info490/assets
@@ -58,7 +60,8 @@ class AssetReader(object):
             lesson_base = tag
 
         self.lesson_base = "{:s}/{:s}".format(base_dir, lesson_base)
-        print('File Assets', self.lesson_base)
+        if debug:
+            print('File Assets', self.lesson_base)
 
         # allow imports of lib
         # these files MUST be available on test framework too
