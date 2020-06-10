@@ -87,9 +87,9 @@ class AssetReader(object):
             return fd.read()
 
     def view_section(self, section, remote=False):
-        section = str(section)
+        section = int(section)
         if remote:
-            url = "{:s}/html/section{section:s}.html".format(self.url, section=section)
+            url = "{:s}/html/section{section:02d}.html".format(self.url, section=section)
             try:
                 import requests
                 r = requests.get(url)
@@ -106,7 +106,7 @@ class AssetReader(object):
                 print(text)
         else:
             try:
-                fq_path = "html/section{:s}.html".format(section)
+                fq_path = "html/section{:02d}.html".format(section)
                 text = self.read_local(fq_path)
             except FileNotFoundError:
                 text = "File Not Found: " + fq_path
