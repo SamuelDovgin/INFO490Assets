@@ -4,6 +4,8 @@
 #
 
 import re
+import sys
+import os
 
 '''
 import importlib
@@ -23,8 +25,16 @@ has those limitations.
 how to treat: you-did—I-didn't
 '''
 
+def read_data_file(fn):
+    fq = os.path.dirname(os.path.abspath(__file__))
+    fq_path = "{:s}/../data/{:s}".format(fq, fn)
+    with open (fq_path, 'r') as fd:
+        return fd.read()
+
+
 def clean_chapter(chapter):
     c = chapter.replace("\n", " ")
+    c = c.replace("-", " ")
     pattern = r"[A-Za-z0-9']+-?[A-Za-z0-9']+"
     # pattern = r"[A-Za-z0-9']+"
     regex = re.compile(pattern)
@@ -33,6 +43,7 @@ def clean_chapter(chapter):
     # remove leading and trailing single quotes
     t = [t.strip("'") for t in tokens]
     return " ".join(t).strip()
+
 
 def clean_chapters(chapters):
     out = []
@@ -59,16 +70,17 @@ keep the internal ones
 do NOT change the case of the word
 you will need to use the powerful string methods you learned in the bootcamp
 '''
-def split_into_tokens(data, normalize=True, min_length=2):
+
+def split_into_tokens(data, normalize=True, min_length=0):
     tokens = data.split()
     if normalize:
         tokens = [t.lower() for t in tokens if len(t) > min_length]
     return tokens
 
 
-def print_tfidf(documents, tfidf, top_n):
-    for d_idx, doc in enumerate(documents):
-        top_10 = tfidf[d_idx].most_common(top_n)
+def print_tfidf(tfidf, top_n=10):
+    for d_idx, _tfidf in enumerate(tfidf):
+        top_10 = _tfidf.most_common(top_n)
         print("Document: {}".format(d_idx+1))
         for word, score in top_10:
             print(" Word: {:14.12} TF-IDF: {:10.5f}".format(word, round(score, 5)))
