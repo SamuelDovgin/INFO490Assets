@@ -21,8 +21,8 @@ not match double hyphenated words (Aunt--Poly) (it will be two matches)
 keep single hyphenated words (e.g. iron-will)
 include the apostrophe in all of its possible uses. 
 Make sure you understand why the given regular expression 
-has those limitations.  
-how to treat: you-did—I-didn't
+has those limitations.
+how to treat: you-did-I-didn't
 '''
 
 def read_data_file(fn):
@@ -32,9 +32,9 @@ def read_data_file(fn):
         return fd.read()
 
 
+
 def clean_chapter(chapter):
     c = chapter.replace("\n", " ")
-    c = c.replace("-", " ")
     pattern = r"[A-Za-z0-9']+-?[A-Za-z0-9']+"
     # pattern = r"[A-Za-z0-9']+"
     regex = re.compile(pattern)
