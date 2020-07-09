@@ -13,7 +13,7 @@ def read_local_file(filename):
     with open(filename, 'r') as fd:
         return fd.read()
 
-# could split the lesson tag into dir, lesson dir;
+# could split the lesson tag into data, lesson data;
 # def read_data_file(lesson, filename):
 #     parent_dir = os.path.abspath(os.path.dirname(__file__))
 #     fq = "{:s}/{:s}".format(parent_dir)
