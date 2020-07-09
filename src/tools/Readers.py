@@ -76,6 +76,7 @@ class AssetReader(object):
             print("IPython not installed")
             self.player = None
 
+    # better for clients to use LessonUtil.py
     def read_data_file(self, filename):
         fn = "{:s}/data/{:s}".format(self.lesson_base, filename)
         with open(fn, 'r') as fd:
