@@ -1,6 +1,7 @@
 .idea/
 *.zip
 *.pxm
+sandbox/
 sandbox_tmp/
 
 # Byte-compiled / optimized / DLL files
@@ -131,4 +132,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
