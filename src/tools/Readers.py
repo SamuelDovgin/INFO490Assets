@@ -13,6 +13,9 @@ use the reader !!!
 #
 LESSON_MAP = {
     'base': '/dmap/lessons',
+
+    # only needed if the lesson_tag is not the same
+    # as where the data is
     'DMAP:INTRO': {
         'base': 'intro',
     },
@@ -75,6 +78,9 @@ class AssetReader(object):
         except ImportError:
             print("IPython not installed")
             self.player = None
+
+    def path_for_data(self, filename):
+        return "{:s}/data/{:s}".format(self.lesson_base, filename)
 
     # better for clients to use LessonUtil.py
     def read_data_file(self, filename):
