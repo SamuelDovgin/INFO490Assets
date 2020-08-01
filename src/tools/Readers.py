@@ -8,22 +8,7 @@ OR
 use the reader !!!
 '''
 
-#
-# TODO:  put in config file, fetch it
-#
-LESSON_MAP = {
-    'base': '/dmap/lessons',
-
-    # only needed if the lesson_tag is not the same
-    # as where the data is
-    'DMAP:INTRO': {
-        'base': 'intro',
-    },
-    'DMAP:TFIDF': {
-        'base': 'tfidf',
-    },
-}
-
+GIT_ROOT = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src'
 
 def in_path(dir):
     for p in sys.path:
@@ -37,14 +22,19 @@ class AssetReader(object):
     def __init__(self, lesson_id, debug=False):
 
         self.debug = debug
-        parts = lesson_id.split(':', 2)
-        classroom = parts[0]  # DMAP
-        tag = parts[1]        # tfidf
+        parts = lesson_id.lower().split(':')
+        if len(parts) == 2:
+            classroom = parts[0]  # DMAP
+            tag = parts[1]        # tfidf
+        else:
+            classroom = parts[0]   # dmap
+            dir_ignore = parts[1]  # data
+            tag = parts[2]         # color
 
-        base_path = LESSON_MAP.get('base', None)
-        assert base_path is not None, "bad Reader config"
+        # e.g. /dmap/lessons/
+        base_path = "{:s}/lessons".format(classroom)
 
-        self.url = 'https://raw.githubusercontent.com/NSF-EC/INFO490Assets/master/src/{base:s}/{tag:s}'.format(base=base_path, tag=tag)
+        self.url = "{git:s}/{base:s}/{tag:s}".format(git=GIT_ROOT,base=base_path, tag=tag)
         if debug:
             print('URL Assets', self.url)
 
@@ -56,13 +46,8 @@ class AssetReader(object):
         if asset_dir not in sys.path:
             sys.path.append(asset_dir)
 
-        base_dir = asset_dir + base_path
-        if lesson_id in LESSON_MAP:
-            lesson_base = LESSON_MAP[lesson_id].get('base', tag)
-        else:
-            lesson_base = tag
-
-        self.lesson_base = "{:s}/{:s}".format(base_dir, lesson_base)
+        base_dir = "{:s}/{:s}".format(asset_dir, base_path)
+        self.lesson_base = "{:s}/{:s}".format(base_dir, tag)
         if debug:
             print('File Assets', self.lesson_base)
 
