@@ -12,7 +12,15 @@ class RandomData(object):
         self.x = np.random.randn(n) # norm dist, mean 0; var: 1
         self.y = np.random.randn(n)
         self.c = np.random.choice(cat_count, n)
-        self.pet = np.random.choice([  'dog', 'cat', 'fish', 'n/a'], size=n,
-                                     p=[0.35, 0.25, 0.10, 0.30])
         self.n = np.array([x for x in range(0, n)])
         self.xy = (self.x, self.y)
+
+class RandomPetData(object):
+
+    def __init__(self, n=50):
+        r.seed(101)
+        np.random.seed(101)
+        self.x = np.random.randn(n) # norm dist, mean 0; var: 1
+        self.y = np.random.randn(n)
+        self.pet = np.random.choice([  'dog', 'cat', 'fish', 'n/a'], size=n,
+                                    p=[0.35, 0.25, 0.10, 0.30])
