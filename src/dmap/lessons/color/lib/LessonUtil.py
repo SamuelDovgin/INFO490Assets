@@ -13,7 +13,7 @@ class RandomData(object):
         self.y = np.random.randn(n)
         self.c = np.random.choice(cat_count, n)
         self.n = np.array([x for x in range(0, n)])
-        self.xy = (self.x, self.y)
+        self.xy = np.array([self.x, self.y])
 
 class RandomPetData(object):
 
