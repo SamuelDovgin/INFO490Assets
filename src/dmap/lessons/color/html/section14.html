@@ -4,7 +4,8 @@
   markers = axes.bar(data.n, data.y, color='red')
   for marker, y in zip(markers, data.y): 
     if y &gt; 0:
-      marker.set(color='green', edgecolor='black', linewidth=1)
+      marker.set(color='green', linewidth=3)
+      marker.set_edgecolor('black')
 
 data10 = RandomData(10)
 plot_ex6(data10)</code></pre></div></div></div></body></html>
