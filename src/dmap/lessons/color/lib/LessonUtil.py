@@ -4,6 +4,8 @@
 #
 import random as r
 import numpy as np
+
+
 class RandomData(object):
 
     def __init__(self, n=50, cat_count=3):
@@ -15,6 +17,7 @@ class RandomData(object):
         self.n = np.array([x for x in range(0, n)])
         self.xy = np.array([self.x, self.y])
 
+1
 class RandomPetData(object):
 
     def __init__(self, n=50):
