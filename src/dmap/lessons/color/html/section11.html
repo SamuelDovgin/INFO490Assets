@@ -21,7 +21,7 @@ yellow_color = (1,1,0)
 white_color  = (1,1,1)</code></pre><p class="new">We will discuss the fourth alpha (or opacity) channel soon.  By default it is always 1.</p><h4 id="hex-colors">Hex Colors</h4><p class="new">You can also specify a color using hexadecimal (using <code>0</code> - <code>F</code>).  Each channel
  (Red, Green, Blue) are represented as two hexadecimal digits (base 16):</p><pre><code>black         = '#000000' 
 mystery_color = '#00FFDD'</code></pre><p class="new">Here 00 is no color and FF (e.g. 256 in base 16). Anyplace where you can 
-specify a colorname in matplotlib you can also use a hex string or color tuple.</p><blockquote><p class="new"><strong><em>Coder's Log</em></strong>: If you have never used base 16 (hexidecimal), the 
+specify a colorname in matplotlib you can also use a hex string or color tuple.</p><blockquote><p class="new"><strong><em>Coder's Log</em></strong>: If you have never used base 16 (hexadecimal), the 
 main idea is that you use the letters A-F once you get past 9.  So you count via 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F. And FF is 255 (base 10).<br/>Can you see why?<br/><code>0x0F = 15</code><br/><code>0x10 = 16</code><br/><code>0x11 = 17</code><br/><code>0x81 = 129 (8 * 16) + 1</code><br/><code>0xFF = 255 (15 * 16) + 15</code></p></blockquote><h3 id="multiple-points-multiple-data">Multiple Points, Multiple Data</h3><p class="new">For some chart types you can pass in arrays of colors to be used for subsequent
 data points.  The following example has 4 points, each colored differently (the 
 keyword <code>s</code> controls the marker size of a scatter plot):</p></div></div></body></html>

@@ -2,7 +2,7 @@
 <p class="new">You can read about how interpolate works by consulting the 
 matplotlib <a href="https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.fill_between.html" target="_blank">documentation</a>.
 You can always use Numpy masks in other charts as well.  In the following
- example the colors array can be passed as a 'color' to use:</p><pre><code>colors = np.where(x&lt;1, 'k', np.where(y&lt;5, 'b', 'r'))</code></pre><h3 id="cyclers">Cyclers</h3><p class="new">If your data adheres to a cyclical pattern (e.g. first the cars, then buses, then boats), 
+ example the colors array can be passed as a 'color' to use:</p><pre><code>colors = np.where(x&lt;1, 'k', np.where(y&lt;5, 'b', 'r'))</code></pre><p class="new">Be sure to experiment with <code>np.where</code> to figure out what's happening.</p><h3 id="cyclers">Cyclers</h3><p class="new">If your data adheres to a cyclical pattern (e.g. first the cars, then buses, then boats), 
 you can create corresponding color cycles.  The Python library <code>itertools</code> has
 many functions that help with iteration over different data sets.<br/>The function <code>next</code> is used to advance to the next color in the cycle. 
 We will use the <code>cycle</code> function to build an endless pattern of colors:</p></div></div></body></html>
